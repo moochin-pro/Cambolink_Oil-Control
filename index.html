@@ -1,4 +1,3 @@
-MADE BY MOOCHIN><
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,28 +13,31 @@ MADE BY MOOCHIN><
         .admin-only { display: none !important; }
         body.is-admin .admin-only { display: block !important; }
 
-        /* Clean Table Styles */
         tr { border-bottom: 1px solid #e2e8f0; }
         tr:last-child { border: none; }
         
-        /* Mobile Nav Fix */
         .m-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #e2e8f0; display: flex; height: 65px; z-index: 50; }
         .m-nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: #94a3b8; border: none; background: transparent; }
         .m-nav-btn.active { color: #059669; }
 
         input, select { border: 1px solid #e2e8f0 !important; }
+        /* Style for searchable datalist input */
+        .search-input { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="%2394a3b8"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>'); background-repeat: no-repeat; background-position: 12px center; background-size: 16px; padding-left: 36px !important; }
     </style>
 </head>
 <body class="pb-20 lg:pb-0">
 
     <div id="loginSection" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900 p-6">
-        <div class="bg-white p-8 rounded-2xl w-full max-w-sm shadow-xl">
-            <h1 class="text-2xl font-bold mb-2 text-slate-900">CL21 Login</h1>
+        <div class="bg-white p-8 rounded-2xl w-full max-w-sm shadow-xl text-center">
+            <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl">
+                <i class="fa-solid fa-gas-pump"></i>
+            </div>
+            <h1 class="text-2xl font-bold text-slate-900">CL21 Login</h1>
             <p class="text-xs text-slate-400 mb-6 font-semibold uppercase tracking-wider">Oil Control System</p>
-            <form id="loginForm" class="space-y-4">
-                <input type="text" id="uIn" placeholder="Username" class="w-full p-3 rounded-lg outline-none bg-slate-50 font-medium" required>
-                <input type="password" id="pIn" placeholder="Password" class="w-full p-3 rounded-lg outline-none bg-slate-50 font-medium" required>
-                <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-lg font-bold text-sm uppercase tracking-wide">Enter System</button>
+            <form id="loginForm" class="space-y-3">
+                <input type="text" id="uIn" placeholder="Username" class="w-full p-3 rounded-lg outline-none bg-slate-50 font-medium text-center" required>
+                <input type="password" id="pIn" placeholder="Password" class="w-full p-3 rounded-lg outline-none bg-slate-50 font-medium text-center" required>
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-lg font-bold text-sm uppercase transition-all">Enter System</button>
             </form>
         </div>
     </div>
@@ -43,18 +45,20 @@ MADE BY MOOCHIN><
     <div id="app" class="hidden flex flex-col lg:flex-row min-h-screen">
         
         <aside class="hidden lg:flex w-64 bg-white border-r flex-col p-6 sticky top-0 h-screen">
-            <div class="font-bold text-xl mb-10 tracking-tight text-emerald-600">CL21_OIL</div>
+            <div class="font-black text-2xl mb-10 tracking-tighter text-emerald-600 flex items-center gap-2">
+                <i class="fa-solid fa-droplet"></i> CL21_OIL
+            </div>
             <nav class="flex-1 space-y-1">
-                <button onclick="nav('dash')" id="d-dash" class="w-full text-left px-4 py-3 rounded-lg font-bold text-sm bg-emerald-50 text-emerald-700">Dashboard</button>
-                <button onclick="nav('admin')" id="d-admin" class="admin-only w-full text-left px-4 py-3 rounded-lg font-bold text-sm text-slate-500 hover:bg-slate-50">Admin Panel</button>
+                <button onclick="nav('dash')" id="d-dash" class="w-full text-left px-4 py-3 rounded-lg font-bold text-sm bg-emerald-50 text-emerald-700"><i class="fa-solid fa-chart-pie mr-3"></i>Dashboard</button>
+                <button onclick="nav('admin')" id="d-admin" class="admin-only w-full text-left px-4 py-3 rounded-lg font-bold text-sm text-slate-500 hover:bg-slate-50"><i class="fa-solid fa-gears mr-3"></i>Admin Panel</button>
             </nav>
-            <button onclick="location.reload()" class="text-red-500 text-xs font-bold text-left px-4 py-3">Logout</button>
+            <button onclick="location.reload()" class="text-red-500 text-xs font-bold text-left px-4 py-3 hover:bg-red-50 rounded-lg"><i class="fa-solid fa-power-off mr-3"></i>Logout</button>
         </aside>
 
         <nav class="lg:hidden m-nav">
-            <button onclick="nav('dash')" id="m-dash" class="m-nav-btn active"><i class="fa-solid fa-table-list mb-1 text-lg"></i>Data</button>
-            <button onclick="nav('admin')" id="m-admin" class="m-nav-btn admin-only"><i class="fa-solid fa-gear mb-1 text-lg"></i>Admin</button>
-            <button onclick="location.reload()" class="m-nav-btn"><i class="fa-solid fa-right-from-bracket mb-1 text-lg"></i>Exit</button>
+            <button onclick="nav('dash')" id="m-dash" class="m-nav-btn active"><i class="fa-solid fa-list-check mb-1 text-lg"></i>Data</button>
+            <button onclick="nav('admin')" id="m-admin" class="m-nav-btn admin-only"><i class="fa-solid fa-screwdriver-wrench mb-1 text-lg"></i>Admin</button>
+            <button onclick="location.reload()" class="m-nav-btn text-red-400"><i class="fa-solid fa-door-open mb-1 text-lg"></i>Exit</button>
         </nav>
 
         <main class="flex-1 p-4 lg:p-10">
@@ -62,80 +66,97 @@ MADE BY MOOCHIN><
             <div id="view-dash" class="max-w-5xl mx-auto space-y-6">
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                        <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Calculated Total (Liters)</p>
-                        <h2 class="text-4xl font-extrabold text-slate-900" id="totalDisplay">0.00</h2>
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-center">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Total Fuel Usage</p>
+                        <h2 class="text-5xl font-black text-slate-900" id="totalDisplay">0.00</h2>
                     </div>
-                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex items-center gap-3">
-                        <div class="flex-1">
-                            <p class="text-[10px] font-bold text-slate-400 uppercase mb-2">Filter Data</p>
-                            <div class="flex gap-2">
-                                <select id="fMonth" onchange="renderLogs()" class="flex-1 p-2 rounded border text-xs font-bold bg-slate-50 outline-none"></select>
-                                <select id="fYear" onchange="renderLogs()" class="flex-1 p-2 rounded border text-xs font-bold bg-slate-50 outline-none"></select>
-                            </div>
+                    
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                        <div class="flex justify-between items-center">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase">Filters & Search</p>
+                            <button onclick="exportData()" class="text-emerald-600 text-xs font-bold uppercase"><i class="fa-solid fa-file-export mr-1"></i>Export CSV</button>
                         </div>
-                        <button onclick="exportData()" class="bg-slate-900 text-white px-4 py-3 rounded-lg text-xs font-bold uppercase"><i class="fa-solid fa-download"></i></button>
+                        <div class="grid grid-cols-2 gap-2">
+                            <select id="fMonth" onchange="renderLogs()" class="p-2 rounded-lg border text-xs font-bold bg-slate-50"></select>
+                            <select id="fYear" onchange="renderLogs()" class="p-2 rounded-lg border text-xs font-bold bg-slate-50"></select>
+                        </div>
+                        <input type="text" id="fSearch" oninput="renderLogs()" placeholder="Search Plate Number..." class="search-input w-full p-2.5 rounded-lg border text-sm font-bold uppercase outline-none">
                     </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                    <h3 class="text-xs font-bold uppercase text-slate-400 mb-4">Add Fuel Record</h3>
-                    <form id="oilForm" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-                        <input type="date" id="iDate" required class="p-3 bg-slate-50 rounded border text-sm font-medium outline-none">
-                        <select id="iPlate" onchange="syncType()" required class="p-3 bg-slate-50 rounded border text-sm font-medium outline-none"></select>
-                        <input type="text" id="iType" readonly class="p-3 bg-slate-100 rounded border text-sm font-medium text-slate-400" placeholder="Model Class">
-                        <select id="iRoute" required class="p-3 bg-slate-50 rounded border text-sm font-medium outline-none"></select>
-                        <input type="number" id="iAmt" step="0.01" required placeholder="Liters (L)" class="p-3 bg-emerald-50 rounded border border-emerald-100 text-sm font-bold text-emerald-700">
-                        <button type="submit" class="lg:col-span-5 bg-emerald-600 text-white py-3 rounded-lg font-bold text-sm uppercase">Save Entry</button>
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <h3 class="text-xs font-bold uppercase text-slate-400 mb-4 flex items-center gap-2"><i class="fa-solid fa-plus-circle text-emerald-500"></i> New Entry</h3>
+                    <form id="oilForm" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3">
+                        <input type="date" id="iDate" required class="p-3 bg-slate-50 rounded-xl border text-sm font-medium outline-none">
+                        
+                        <div class="relative">
+                            <input list="plateList" id="iPlate" placeholder="Plate #" onchange="syncType()" required class="search-input w-full p-3 bg-white rounded-xl border text-sm font-bold uppercase outline-none">
+                            <datalist id="plateList"></datalist>
+                        </div>
+
+                        <input type="text" id="iType" readonly class="p-3 bg-slate-100 rounded-xl border text-sm font-medium text-slate-400" placeholder="Auto-Class">
+                        
+                        <select id="iRoute" required class="p-3 bg-slate-50 rounded-xl border text-sm font-medium outline-none"></select>
+                        
+                        <input type="number" id="iAmt" step="0.01" required placeholder="Liters (L)" class="p-3 bg-emerald-50 rounded-xl border border-emerald-100 text-sm font-black text-emerald-700">
+                        
+                        <button type="submit" class="lg:col-span-5 bg-slate-900 text-white py-4 rounded-xl font-bold text-sm uppercase tracking-widest hover:bg-black transition-all">Save To Cloud</button>
                     </form>
                 </div>
 
-                <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-                    <table class="w-full text-left text-sm">
-                        <thead class="bg-slate-50 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                            <tr>
-                                <th class="px-6 py-4">Date</th>
-                                <th class="px-6 py-4">Plate #</th>
-                                <th class="px-6 py-4">Details</th>
-                                <th class="px-6 py-4 text-right">Liters</th>
-                                <th class="px-6 py-4 text-right admin-only">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="logTable" class="text-slate-600"></tbody>
-                    </table>
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-slate-50 text-[10px] font-bold text-slate-500 uppercase">
+                                <tr>
+                                    <th class="px-6 py-4">Date</th>
+                                    <th class="px-6 py-4">Vehicle</th>
+                                    <th class="px-6 py-4">Route</th>
+                                    <th class="px-6 py-4 text-right">Fuel</th>
+                                    <th class="px-6 py-4 text-right admin-only">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="logTable" class="text-slate-600 font-medium"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
             <div id="view-admin" class="hidden max-w-4xl mx-auto space-y-6">
-                <div class="flex gap-2 border-b">
-                    <button onclick="tab('users')" id="t-users" class="px-4 py-2 font-bold text-sm border-b-2 border-emerald-600 text-emerald-600">Users</button>
-                    <button onclick="tab('cars')" id="t-cars" class="px-4 py-2 font-bold text-sm text-slate-400">Vehicles</button>
-                    <button onclick="tab('roads')" id="t-roads" class="px-4 py-2 font-bold text-sm text-slate-400">Routes</button>
+                <div class="flex gap-2 p-1 bg-white rounded-xl border w-fit">
+                    <button onclick="tab('users')" id="t-users" class="px-6 py-2 rounded-lg font-bold text-xs uppercase bg-emerald-600 text-white">Users</button>
+                    <button onclick="tab('cars')" id="t-cars" class="px-6 py-2 rounded-lg font-bold text-xs uppercase text-slate-400">Vehicles</button>
+                    <button onclick="tab('roads')" id="t-roads" class="px-6 py-2 rounded-lg font-bold text-xs uppercase text-slate-400">Routes</button>
                 </div>
 
                 <div id="sec-users" class="space-y-4">
-                    <form id="uForm" class="flex gap-2">
-                        <input type="text" id="uName" placeholder="New Username" class="flex-1 p-3 rounded border text-sm outline-none" required>
-                        <input type="password" id="uPass" placeholder="Password" class="flex-1 p-3 rounded border text-sm outline-none" required>
-                        <button type="submit" class="bg-slate-900 text-white px-6 rounded-lg font-bold text-xs uppercase">Create</button>
+                    <form id="uForm" class="bg-white p-4 rounded-2xl border flex gap-2">
+                        <input type="text" id="uName" placeholder="Username" class="flex-1 p-3 rounded-xl border text-sm outline-none" required>
+                        <input type="password" id="uPass" placeholder="Password" class="flex-1 p-3 rounded-xl border text-sm outline-none" required>
+                        <button type="submit" class="bg-slate-900 text-white px-8 rounded-xl font-bold text-xs uppercase">Add</button>
                     </form>
                     <div id="list-users" class="grid grid-cols-1 md:grid-cols-2 gap-2"></div>
                 </div>
 
                 <div id="sec-cars" class="hidden space-y-4">
-                    <div class="flex gap-2">
-                        <input type="text" id="vPlate" placeholder="Plate #" class="flex-1 p-3 rounded border text-sm font-bold uppercase outline-none">
-                        <input type="text" id="vTypeManual" placeholder="Type" class="flex-1 p-3 rounded border text-sm outline-none">
-                        <button onclick="addVehicle()" class="bg-emerald-600 text-white px-6 rounded-lg font-bold text-xs uppercase">Register</button>
+                    <div class="bg-white p-6 rounded-2xl border space-y-3">
+                        <h4 class="text-xs font-bold uppercase text-slate-400">Register Vehicle</h4>
+                        <div class="flex flex-col md:flex-row gap-2">
+                            <input type="text" id="vPlate" placeholder="Plate Number" class="flex-1 p-3 rounded-xl border text-sm font-bold uppercase outline-none">
+                            <input type="text" id="vTypeManual" placeholder="Vehicle Type (e.g. Ford Raptor)" class="flex-1 p-3 rounded-xl border text-sm outline-none">
+                            <button onclick="addVehicle()" class="bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold text-xs uppercase">Register</button>
+                        </div>
                     </div>
+                    <input type="text" id="vSearch" oninput="refreshAdminLists()" placeholder="Search Registered Vehicles..." class="search-input w-full p-4 bg-white rounded-2xl border text-sm font-bold uppercase outline-none shadow-sm">
                     <div id="list-cars" class="grid grid-cols-1 md:grid-cols-2 gap-2"></div>
                 </div>
 
                 <div id="sec-roads" class="hidden space-y-4">
-                    <div class="flex gap-2">
-                        <input type="text" id="rName" placeholder="New Route" class="flex-1 p-3 rounded border text-sm outline-none">
-                        <button onclick="addRoute()" class="bg-slate-900 text-white px-6 rounded-lg font-bold text-lg">+</button>
+                    <div class="bg-white p-6 rounded-2xl border flex gap-2">
+                        <input type="text" id="rName" placeholder="Enter New Route Name" class="flex-1 p-3 rounded-xl border text-sm outline-none">
+                        <button onclick="addRoute()" class="bg-slate-900 text-white px-8 rounded-xl font-bold text-sm">+</button>
                     </div>
+                    <input type="text" id="rSearch" oninput="refreshAdminLists()" placeholder="Filter Routes..." class="search-input w-full p-4 bg-white rounded-2xl border text-sm font-bold uppercase outline-none shadow-sm">
                     <div id="list-roads" class="grid grid-cols-2 md:grid-cols-4 gap-2"></div>
                 </div>
             </div>
@@ -146,58 +167,41 @@ MADE BY MOOCHIN><
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, deleteDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // --- Your Specific Firebase Config ---
+        // CONFIG
         const firebaseConfig = {
             apiKey: "AIzaSyDITjn7k_fWas0YJgOYh5daG3YARqWe9n0",
             authDomain: "cl21-oil-system.firebaseapp.com",
             projectId: "cl21-oil-system",
             storageBucket: "cl21-oil-system.firebasestorage.app",
             messagingSenderId: "482675024663",
-            appId: "1:482675024663:web:036e7296a4fd0fd539cd52",
-            measurementId: "G-XENJVHXNF1"
+            appId: "1:482675024663:web:036e7296a4fd0fd539cd52"
         };
 
         const app = initializeApp(firebaseConfig);
         const firestore = getFirestore(app);
 
         let session = null;
-        let db = {
-            users: [],
-            config: { vehicles: [], routes: ['Phnom Penh'] },
-            logs: []
-        };
+        let db = { users: [], config: { vehicles: [], routes: [] }, logs: [] };
 
-        // --- REAL-TIME LISTENERS (Replaces LocalStorage) ---
-
-        // 1. Sync Users
-        onSnapshot(collection(firestore, "users"), (snapshot) => {
-            db.users = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            if (db.users.length === 0) {
-                // Seed default admin if none exist
-                setDoc(doc(firestore, "users", "admin_default"), { u: 'admin', p: 'cambo@123', role: 'admin' });
-            }
-            refresh();
+        // REAL-TIME SYNC
+        onSnapshot(collection(firestore, "users"), (snap) => {
+            db.users = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            if (db.users.length === 0) setDoc(doc(firestore, "users", "default"), { u: 'admin', p: 'cambo@123', role: 'admin' });
+            refreshAdminLists();
         });
 
-        // 2. Sync Config (Vehicles/Routes)
-        onSnapshot(doc(firestore, "settings", "config"), (snapshot) => {
-            if (snapshot.exists()) {
-                db.config = snapshot.data();
-                refresh();
-            } else {
-                setDoc(doc(firestore, "settings", "config"), db.config);
-            }
+        onSnapshot(doc(firestore, "settings", "config"), (snap) => {
+            if (snap.exists()) { db.config = snap.data(); refreshAdminLists(); }
+            else { setDoc(doc(firestore, "settings", "config"), { vehicles: [], routes: ['Phnom Penh'] }); }
         });
 
-        // 3. Sync Logs
-        const q = query(collection(firestore, "oil_logs"), orderBy("date", "desc"));
-        onSnapshot(q, (snapshot) => {
-            db.logs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const logQ = query(collection(firestore, "oil_logs"), orderBy("date", "desc"));
+        onSnapshot(logQ, (snap) => {
+            db.logs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
             renderLogs();
         });
 
-        // --- UI FUNCTIONS ---
-
+        // NAVIGATION
         window.nav = (v) => {
             document.getElementById('view-dash').classList.toggle('hidden', v !== 'dash');
             document.getElementById('view-admin').classList.toggle('hidden', v !== 'admin');
@@ -210,10 +214,11 @@ MADE BY MOOCHIN><
         window.tab = (t) => {
             ['users', 'cars', 'roads'].forEach(x => {
                 document.getElementById(`sec-${x}`).classList.toggle('hidden', x !== t);
-                document.getElementById(`t-${x}`).className = (x===t) ? "px-4 py-2 font-bold text-sm border-b-2 border-emerald-600 text-emerald-600" : "px-4 py-2 font-bold text-sm text-slate-400";
+                document.getElementById(`t-${x}`).className = (x===t) ? "px-6 py-2 rounded-lg font-bold text-xs uppercase bg-emerald-600 text-white" : "px-6 py-2 rounded-lg font-bold text-xs uppercase text-slate-400";
             });
         }
 
+        // AUTH
         document.getElementById('loginForm').onsubmit = (e) => {
             e.preventDefault();
             const user = db.users.find(x => x.u === document.getElementById('uIn').value && x.p === document.getElementById('pIn').value);
@@ -222,24 +227,26 @@ MADE BY MOOCHIN><
                 if(user.role === 'admin') document.body.classList.add('is-admin');
                 document.getElementById('loginSection').style.display = 'none';
                 document.getElementById('app').classList.remove('hidden');
-                init();
-            } else alert("Invalid username or password");
+                setupFilters();
+            } else alert("Access Denied: Wrong Credentials");
         };
 
-        function init() {
+        function setupFilters() {
             const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-            document.getElementById('fMonth').innerHTML = '<option value="all">Any Month</option>' + months.map((m, i) => `<option value="${i}">${m.toUpperCase()}</option>`).join('');
-            let ys = '<option value="all">Any Year</option>'; for(let y=2026; y<=2030; y++) ys += `<option value="${y}">${y}</option>`;
+            document.getElementById('fMonth').innerHTML = '<option value="all">ANY MONTH</option>' + months.map((m, i) => `<option value="${i}">${m.toUpperCase()}</option>`).join('');
+            let ys = '<option value="all">ANY YEAR</option>'; for(let y=2026; y<=2028; y++) ys += `<option value="${y}">${y}</option>`;
             document.getElementById('fYear').innerHTML = ys;
             document.getElementById('fMonth').value = new Date().getMonth();
             document.getElementById('fYear').value = new Date().getFullYear();
             document.getElementById('iDate').valueAsDate = new Date();
-            refresh();
+            refreshAdminLists();
         }
 
+        // RENDER LOGS (With Search)
         window.renderLogs = () => {
             const m = document.getElementById('fMonth').value;
             const y = document.getElementById('fYear').value;
+            const s = document.getElementById('fSearch').value.toUpperCase();
             let total = 0;
 
             const filtered = db.logs.filter(l => {
@@ -247,94 +254,137 @@ MADE BY MOOCHIN><
                 const userMatch = (session.role === 'admin' || l.user === session.u);
                 const monthMatch = (m === 'all' || d.getMonth().toString() === m);
                 const yearMatch = (y === 'all' || d.getFullYear().toString() === y);
-                return userMatch && monthMatch && yearMatch;
+                const searchMatch = l.plate.toUpperCase().includes(s);
+                return userMatch && monthMatch && yearMatch && searchMatch;
             });
 
             document.getElementById('logTable').innerHTML = filtered.map(l => {
                 total += l.amt;
                 return `<tr>
-                    <td class="px-6 py-4 text-xs font-medium text-slate-400">${new Date(l.date).toLocaleDateString()}</td>
-                    <td class="px-6 py-4 font-bold text-slate-900">${l.plate}</td>
-                    <td class="px-6 py-4 text-xs font-semibold">${l.type} <span class="text-slate-300 mx-1">/</span> ${l.route}</td>
-                    <td class="px-6 py-4 text-right font-bold text-emerald-600">${l.amt.toFixed(2)}L</td>
-                    <td class="px-6 py-4 text-right admin-only"><button onclick="delLog('${l.id}')" class="text-red-300 hover:text-red-600 px-2">Delete</button></td>
+                    <td class="px-6 py-4">
+                        <div class="text-[10px] text-slate-400 font-bold uppercase">${new Date(l.date).toLocaleDateString(undefined, {month:'short', day:'numeric'})}</div>
+                        <div class="text-[11px] text-slate-500">${new Date(l.date).getFullYear()}</div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="font-bold text-slate-900 uppercase">${l.plate}</div>
+                        <div class="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">${l.type}</div>
+                    </td>
+                    <td class="px-6 py-4 text-[11px] font-bold text-slate-500">${l.route}</td>
+                    <td class="px-6 py-4 text-right font-black text-emerald-600 text-lg">${l.amt.toFixed(2)}<span class="text-[10px] ml-0.5">L</span></td>
+                    <td class="px-6 py-4 text-right admin-only">
+                        <button onclick="delRecord('${l.id}')" class="w-8 h-8 rounded-full bg-red-50 text-red-400 hover:bg-red-500 hover:text-white transition-all"><i class="fa-solid fa-trash-can text-[10px]"></i></button>
+                    </td>
                 </tr>`;
-            }).join('') || '<tr><td colspan="5" class="py-10 text-center text-slate-300">No records found</td></tr>';
+            }).join('') || '<tr><td colspan="5" class="py-20 text-center text-slate-300 italic">No records matching filters</td></tr>';
 
             document.getElementById('totalDisplay').innerText = total.toFixed(2) + " L";
         }
 
+        // ADD RECORD
         document.getElementById('oilForm').onsubmit = async (e) => {
             e.preventDefault();
-            const plate = document.getElementById('iPlate').value;
-            if(!plate) return;
-            const type = db.config.vehicles.find(v => v.plate === plate).type;
-            
+            const plateVal = document.getElementById('iPlate').value.toUpperCase();
+            const found = db.config.vehicles.find(v => v.plate === plateVal);
+            if(!found) return alert("Vehicle not registered. Ask admin to add it.");
+
             await addDoc(collection(firestore, "oil_logs"), {
-                plate, 
-                type, 
-                route: document.getElementById('iRoute').value, 
-                amt: parseFloat(document.getElementById('iAmt').value), 
-                user: session.u, 
-                date: new Date(document.getElementById('iDate').value).toISOString() 
+                plate: plateVal,
+                type: found.type,
+                route: document.getElementById('iRoute').value,
+                amt: parseFloat(document.getElementById('iAmt').value),
+                user: session.u,
+                date: new Date(document.getElementById('iDate').value).toISOString()
             });
-            
             document.getElementById('iAmt').value = '';
+            document.getElementById('iPlate').value = '';
+            document.getElementById('iType').value = '';
         };
 
-        window.delLog = async (id) => { if(confirm("Confirm delete?")){ await deleteDoc(doc(firestore, "oil_logs", id)); }};
-        
-        window.syncType = () => { const v = db.config.vehicles.find(x => x.plate === document.getElementById('iPlate').value); document.getElementById('iType').value = v ? v.type : ''; };
-        
-        window.addVehicle = async () => { 
-            const p = document.getElementById('vPlate').value.trim(); 
-            const t = document.getElementById('vTypeManual').value.trim(); 
-            if(!p || !t) return; 
-            db.config.vehicles.push({ plate: p.toUpperCase(), type: t.toUpperCase() }); 
+        window.delRecord = async (id) => { if(confirm("Permanently delete this entry?")) await deleteDoc(doc(firestore, "oil_logs", id)); };
+        window.syncType = () => { const v = db.config.vehicles.find(x => x.plate === document.getElementById('iPlate').value.toUpperCase()); document.getElementById('iType').value = v ? v.type : ''; };
+
+        // ADMIN ACTIONS
+        window.addVehicle = async () => {
+            const p = document.getElementById('vPlate').value.trim().toUpperCase();
+            const t = document.getElementById('vTypeManual').value.trim().toUpperCase();
+            if(!p || !t) return;
+            db.config.vehicles.push({ plate: p, type: t });
             await setDoc(doc(firestore, "settings", "config"), db.config);
-            document.getElementById('vPlate').value = ''; 
-            document.getElementById('vTypeManual').value = ''; 
+            document.getElementById('vPlate').value = ''; document.getElementById('vTypeManual').value = '';
         };
 
-        window.addRoute = async () => { 
-            const r = document.getElementById('rName').value.trim(); 
-            if(!r) return; 
-            db.config.routes.push(r); 
+        window.addRoute = async () => {
+            const r = document.getElementById('rName').value.trim();
+            if(!r) return;
+            db.config.routes.push(r);
             await setDoc(doc(firestore, "settings", "config"), db.config);
-            document.getElementById('rName').value = ''; 
+            document.getElementById('rName').value = '';
         };
+
+        window.delVehicle = async (plate) => {
+            if(confirm(`Remove vehicle ${plate}?`)) {
+                db.config.vehicles = db.config.vehicles.filter(v => v.plate !== plate);
+                await setDoc(doc(firestore, "settings", "config"), db.config);
+            }
+        };
+
+        window.delRoute = async (name) => {
+            if(confirm(`Remove route ${name}?`)) {
+                db.config.routes = db.config.routes.filter(r => r !== name);
+                await setDoc(doc(firestore, "settings", "config"), db.config);
+            }
+        };
+
+        // ADMIN LIST REFRESH (With Search)
+        function refreshAdminLists() {
+            renderLogs();
+            const carSearch = document.getElementById('vSearch')?.value.toUpperCase() || "";
+            const roadSearch = document.getElementById('rSearch')?.value.toUpperCase() || "";
+
+            // Users List
+            document.getElementById('list-users').innerHTML = db.users.map(u => `
+                <div class="p-4 bg-white border rounded-xl flex justify-between items-center shadow-sm">
+                    <div><div class="text-[10px] font-bold text-slate-400 uppercase leading-none">${u.role}</div><div class="font-bold text-slate-800">${u.u}</div></div>
+                    ${u.u !== 'admin' ? `<button onclick="delUser('${u.id}')" class="text-red-400 font-bold text-[10px] hover:text-red-600">REMOVE</button>` : ''}
+                </div>`).join('');
+
+            // Vehicle List with Search/Delete
+            document.getElementById('list-cars').innerHTML = db.config.vehicles
+                .filter(v => v.plate.includes(carSearch))
+                .map(v => `
+                <div class="p-4 bg-white border rounded-xl flex justify-between items-center shadow-sm">
+                    <div><div class="text-[10px] font-bold text-slate-400 uppercase leading-none">${v.type}</div><div class="font-bold text-slate-800 tracking-wider">${v.plate}</div></div>
+                    <button onclick="delVehicle('${v.plate}')" class="text-red-400 hover:text-red-600"><i class="fa-solid fa-trash-can"></i></button>
+                </div>`).join('') || '<div class="col-span-2 text-center text-slate-400 py-4 italic">No vehicles found</div>';
+
+            // Route List with Search/Delete
+            document.getElementById('list-roads').innerHTML = db.config.routes
+                .filter(r => r.toUpperCase().includes(roadSearch))
+                .map(r => `
+                <div class="p-3 bg-white border rounded-xl flex justify-between items-center shadow-sm text-xs font-bold">
+                    <span class="truncate">${r}</span>
+                    <button onclick="delRoute('${r}')" class="text-red-300 hover:text-red-600 text-lg">&times;</button>
+                </div>`).join('') || '<div class="col-span-4 text-center text-slate-400 py-4 italic">No routes found</div>';
+
+            // Update UI Selectors
+            document.getElementById('plateList').innerHTML = db.config.vehicles.map(v => `<option value="${v.plate}">${v.type}</option>`).join('');
+            document.getElementById('iRoute').innerHTML = db.config.routes.map(r => `<option>${r}</option>`).join('');
+        }
 
         document.getElementById('uForm').onsubmit = async (e) => {
             e.preventDefault();
-            const u = document.getElementById('uName').value.trim();
-            const p = document.getElementById('uPass').value.trim();
-            await addDoc(collection(firestore, "users"), { u, p, role: 'staff' });
-            document.getElementById('uName').value = '';
-            document.getElementById('uPass').value = '';
+            await addDoc(collection(firestore, "users"), { u: document.getElementById('uName').value, p: document.getElementById('uPass').value, role: 'staff' });
+            document.getElementById('uName').value = ''; document.getElementById('uPass').value = '';
         };
 
-        window.delUser = async (id) => {
-            if(confirm("Delete this user?")) await deleteDoc(doc(firestore, "users", id));
-        };
-
-        function refresh() {
-            renderLogs();
-            document.getElementById('list-users').innerHTML = db.users.map((u) => `<div class="p-3 bg-white border rounded flex justify-between items-center text-xs font-bold uppercase shadow-sm">${u.u} ${u.u !== 'admin' ? `<button onclick="delUser('${u.id}')" class="text-red-400">DEL</button>` : ''}</div>`).join('');
-            document.getElementById('list-cars').innerHTML = db.config.vehicles.map((v, i) => `<div class="p-3 bg-white border rounded flex justify-between items-center text-xs font-bold uppercase shadow-sm">${v.plate} <span class="text-slate-300">(${v.type})</span> <button onclick="db.config.vehicles.splice(${i},1); setDoc(doc(firestore, 'settings', 'config'), db.config)" class="text-red-400">DEL</button></div>`).join('');
-            document.getElementById('list-roads').innerHTML = db.config.routes.map((r, i) => `<div class="p-2 bg-white border rounded flex justify-between items-center text-[10px] font-bold shadow-sm">${r} <button onclick="db.config.routes.splice(${i},1); setDoc(doc(firestore, 'settings', 'config'), db.config)" class="text-red-400">×</button></div>`).join('');
-            document.getElementById('iPlate').innerHTML = '<option value="">Select Plate</option>' + db.config.vehicles.map(v => `<option value="${v.plate}">${v.plate}</option>`).join('');
-            document.getElementById('iRoute').innerHTML = db.config.routes.map(r => `<option>${r}</option>`).join('');
-            syncType();
-        }
+        window.delUser = async (id) => { if(confirm("Delete this user?")) await deleteDoc(doc(firestore, "users", id)); };
 
         window.exportData = () => {
             let csv = "Date,Plate,Type,Route,User,Liters\n";
             db.logs.forEach(l => csv += `${new Date(l.date).toLocaleDateString()},${l.plate},${l.type},${l.route},${l.user},${l.amt}\n`);
             const blob = new Blob([csv], { type: 'text/csv' });
-            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'CL21_Report.csv'; a.click();
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'CL21_Fuel_Report.csv'; a.click();
         };
     </script>
 </body>
 </html>
-
-```
