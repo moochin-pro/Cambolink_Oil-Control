@@ -1,172 +1,148 @@
+To connect your existing code to **Firebase Firestore** without changing your current design or UI structure, I have replaced the `localStorage` logic with **Firebase Real-time SDKs**.
+
+This version will now sync your data to the cloud automatically, allowing you to use it on multiple devices in Phnom Penh.
+
+### Updated Full Code (Firebase Connected)
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CL21 | Firebase Master</title>
+    <title>CL21 | Clean Management</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-        body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #1e293b; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Inter', sans-serif; background: #f1f5f9; color: #1e293b; }
         
         .admin-only { display: none !important; }
         body.is-admin .admin-only { display: block !important; }
 
-        /* Mobile Nav Styling */
-        .m-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #e2e8f0; display: flex; height: 70px; z-index: 50; padding-bottom: env(safe-area-inset-bottom); }
-        .m-nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: #94a3b8; border: none; background: none; }
+        /* Clean Table Styles */
+        tr { border-bottom: 1px solid #e2e8f0; }
+        tr:last-child { border: none; }
+        
+        /* Mobile Nav Fix */
+        .m-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #e2e8f0; display: flex; height: 65px; z-index: 50; }
+        .m-nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: #94a3b8; border: none; background: transparent; }
         .m-nav-btn.active { color: #059669; }
 
-        input, select { border: 1px solid #e2e8f0 !important; outline: none; transition: all 0.2s; }
-        input:focus, select:focus { border-color: #10b981 !important; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1); }
-        
-        .glass-card { background: white; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        input, select { border: 1px solid #e2e8f0 !important; }
     </style>
 </head>
 <body class="pb-20 lg:pb-0">
 
     <div id="loginSection" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900 p-6">
-        <div class="bg-white p-8 rounded-3xl w-full max-w-sm shadow-2xl">
-            <div class="mb-8 text-center">
-                <div class="w-16 h-16 bg-emerald-600 rounded-2xl flex items-center justify-center text-white mx-auto mb-4 shadow-lg shadow-emerald-200">
-                    <i class="fa-solid fa-cloud text-2xl"></i>
-                </div>
-                <h1 class="text-2xl font-black text-slate-900 tracking-tight">CL21_CLOUD</h1>
-                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Terminal Authentication</p>
-            </div>
+        <div class="bg-white p-8 rounded-2xl w-full max-w-sm shadow-xl">
+            <h1 class="text-2xl font-bold mb-2 text-slate-900">CL21 Login</h1>
+            <p class="text-xs text-slate-400 mb-6 font-semibold uppercase tracking-wider">Oil Control System</p>
             <form id="loginForm" class="space-y-4">
-                <input type="text" id="uIn" placeholder="Username" class="w-full p-4 rounded-xl bg-slate-50 font-semibold" required>
-                <input type="password" id="pIn" placeholder="Password" class="w-full p-4 rounded-xl bg-slate-50 font-semibold" required>
-                <button type="submit" class="w-full bg-emerald-600 text-white py-4 rounded-xl font-bold text-sm uppercase tracking-wide shadow-lg shadow-emerald-100 hover:bg-emerald-700 active:scale-[0.98] transition-all">Sign In</button>
+                <input type="text" id="uIn" placeholder="Username" class="w-full p-3 rounded-lg outline-none bg-slate-50 font-medium" required>
+                <input type="password" id="pIn" placeholder="Password" class="w-full p-3 rounded-lg outline-none bg-slate-50 font-medium" required>
+                <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-lg font-bold text-sm uppercase tracking-wide">Enter System</button>
             </form>
         </div>
     </div>
 
     <div id="app" class="hidden flex flex-col lg:flex-row min-h-screen">
         
-        <aside class="hidden lg:flex w-72 bg-white border-r flex-col p-8 sticky top-0 h-screen">
-            <div class="font-black text-2xl text-emerald-600 italic tracking-tighter mb-12">CL21_PRO</div>
-            <nav class="flex-1 space-y-2">
-                <button onclick="nav('dash')" id="d-dash" class="w-full text-left px-5 py-4 rounded-2xl font-bold text-sm bg-emerald-50 text-emerald-700">
-                    <i class="fa-solid fa-chart-pie mr-3"></i> Dashboard
-                </button>
-                <button onclick="nav('admin')" id="d-admin" class="admin-only w-full text-left px-5 py-4 rounded-2xl font-bold text-sm text-slate-500 hover:bg-slate-50">
-                    <i class="fa-solid fa-sliders mr-3"></i> Management
-                </button>
+        <aside class="hidden lg:flex w-64 bg-white border-r flex-col p-6 sticky top-0 h-screen">
+            <div class="font-bold text-xl mb-10 tracking-tight text-emerald-600">CL21_OIL</div>
+            <nav class="flex-1 space-y-1">
+                <button onclick="nav('dash')" id="d-dash" class="w-full text-left px-4 py-3 rounded-lg font-bold text-sm bg-emerald-50 text-emerald-700">Dashboard</button>
+                <button onclick="nav('admin')" id="d-admin" class="admin-only w-full text-left px-4 py-3 rounded-lg font-bold text-sm text-slate-500 hover:bg-slate-50">Admin Panel</button>
             </nav>
-            <div class="pt-6 border-t mt-auto">
-                <p class="text-[10px] font-black text-slate-300 uppercase mb-4">Operator: <span id="displayUser" class="text-slate-900">a-oun</span></p>
-                <button onclick="location.reload()" class="text-red-500 text-xs font-bold hover:underline">Logout Terminal</button>
-            </div>
+            <button onclick="location.reload()" class="text-red-500 text-xs font-bold text-left px-4 py-3">Logout</button>
         </aside>
 
         <nav class="lg:hidden m-nav">
-            <button onclick="nav('dash')" id="m-dash" class="m-nav-btn active"><i class="fa-solid fa-list-check mb-1 text-xl"></i>Logs</button>
-            <button onclick="nav('admin')" id="m-admin" class="m-nav-btn admin-only"><i class="fa-solid fa-screwdriver-wrench mb-1 text-xl"></i>Setup</button>
-            <button onclick="location.reload()" class="m-nav-btn text-red-400"><i class="fa-solid fa-power-off mb-1 text-xl"></i>Exit</button>
+            <button onclick="nav('dash')" id="m-dash" class="m-nav-btn active"><i class="fa-solid fa-table-list mb-1 text-lg"></i>Data</button>
+            <button onclick="nav('admin')" id="m-admin" class="m-nav-btn admin-only"><i class="fa-solid fa-gear mb-1 text-lg"></i>Admin</button>
+            <button onclick="location.reload()" class="m-nav-btn"><i class="fa-solid fa-right-from-bracket mb-1 text-lg"></i>Exit</button>
         </nav>
 
-        <main class="flex-1 p-4 lg:p-12">
+        <main class="flex-1 p-4 lg:p-10">
             
             <div id="view-dash" class="max-w-5xl mx-auto space-y-6">
                 
-                <div class="flex flex-col lg:flex-row justify-between gap-6 lg:items-end">
-                    <div class="bg-emerald-600 p-8 rounded-[32px] text-white shadow-2xl shadow-emerald-100 flex-1 relative overflow-hidden">
-                        <i class="fa-solid fa-droplet absolute right-[-20px] top-[-20px] text-9xl opacity-10"></i>
-                        <p class="text-[10px] font-bold uppercase opacity-70 tracking-widest mb-1">Total Period Intake</p>
-                        <h2 class="text-5xl font-black tracking-tighter" id="totalDisplay">0.00</h2>
-                        <p class="text-xs font-bold mt-1 opacity-80">Liters Recorded</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Calculated Total (Liters)</p>
+                        <h2 class="text-4xl font-extrabold text-slate-900" id="totalDisplay">0.00</h2>
                     </div>
-
-                    <div class="bg-white p-6 rounded-[28px] border border-slate-200 flex gap-3 shadow-sm lg:w-96">
-                        <div class="flex-1 space-y-2">
-                            <p class="text-[10px] font-black text-slate-400 uppercase">Archive Filter</p>
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex items-center gap-3">
+                        <div class="flex-1">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase mb-2">Filter Data</p>
                             <div class="flex gap-2">
-                                <select id="fMonth" onchange="renderLogs()" class="flex-1 p-3 rounded-xl bg-slate-50 font-bold text-xs"></select>
-                                <select id="fYear" onchange="renderLogs()" class="flex-1 p-3 rounded-xl bg-slate-50 font-bold text-xs"></select>
+                                <select id="fMonth" onchange="renderLogs()" class="flex-1 p-2 rounded border text-xs font-bold bg-slate-50 outline-none"></select>
+                                <select id="fYear" onchange="renderLogs()" class="flex-1 p-2 rounded border text-xs font-bold bg-slate-50 outline-none"></select>
                             </div>
                         </div>
-                        <button onclick="exportData()" class="bg-slate-900 text-white px-5 rounded-xl hover:bg-slate-800 transition-colors">
-                            <i class="fa-solid fa-file-export"></i>
-                        </button>
+                        <button onclick="exportData()" class="bg-slate-900 text-white px-4 py-3 rounded-lg text-xs font-bold uppercase"><i class="fa-solid fa-download"></i></button>
                     </div>
                 </div>
 
-                <div class="bg-white p-8 rounded-[32px] border border-slate-200 shadow-sm">
-                    <h3 class="text-xs font-black uppercase text-slate-400 mb-6 tracking-widest">Register New Activity</h3>
-                    <form id="oilForm" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5">
-                        <div class="space-y-1">
-                            <label class="text-[9px] font-black text-slate-400 uppercase ml-1">Date</label>
-                            <input type="date" id="iDate" required class="w-full p-4 rounded-2xl bg-slate-50 font-bold text-sm">
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-[9px] font-black text-slate-400 uppercase ml-1">Plate</label>
-                            <select id="iPlate" onchange="syncType()" required class="w-full p-4 rounded-2xl bg-slate-50 font-bold text-sm"></select>
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-[9px] font-black text-slate-400 uppercase ml-1">Vehicle Model</label>
-                            <input type="text" id="iType" readonly class="w-full p-4 rounded-2xl bg-slate-100 font-bold text-sm text-slate-400" placeholder="...">
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-[9px] font-black text-slate-400 uppercase ml-1">Route</label>
-                            <select id="iRoute" required class="w-full p-4 rounded-2xl bg-slate-50 font-bold text-sm"></select>
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-[9px] font-black text-slate-400 uppercase ml-1">Liters (L)</label>
-                            <input type="number" id="iAmt" step="0.01" required placeholder="0.00" class="w-full p-4 rounded-2xl bg-emerald-50 border-emerald-100 font-black text-emerald-700">
-                        </div>
-                        <button type="submit" class="lg:col-span-5 bg-slate-900 text-white py-5 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-lg active:scale-[0.99]">
-                            Submit Cloud Entry
-                        </button>
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                    <h3 class="text-xs font-bold uppercase text-slate-400 mb-4">Add Fuel Record</h3>
+                    <form id="oilForm" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                        <input type="date" id="iDate" required class="p-3 bg-slate-50 rounded border text-sm font-medium outline-none">
+                        <select id="iPlate" onchange="syncType()" required class="p-3 bg-slate-50 rounded border text-sm font-medium outline-none"></select>
+                        <input type="text" id="iType" readonly class="p-3 bg-slate-100 rounded border text-sm font-medium text-slate-400" placeholder="Model Class">
+                        <select id="iRoute" required class="p-3 bg-slate-50 rounded border text-sm font-medium outline-none"></select>
+                        <input type="number" id="iAmt" step="0.01" required placeholder="Liters (L)" class="p-3 bg-emerald-50 rounded border border-emerald-100 text-sm font-bold text-emerald-700">
+                        <button type="submit" class="lg:col-span-5 bg-emerald-600 text-white py-3 rounded-lg font-bold text-sm uppercase">Save Entry</button>
                     </form>
                 </div>
 
-                <div class="bg-white rounded-[32px] border border-slate-200 shadow-sm overflow-hidden">
-                    <table class="w-full text-left">
-                        <thead class="bg-slate-50 border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-50 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
                             <tr>
-                                <th class="px-8 py-5">Timestamp</th>
-                                <th class="px-8 py-5">Vehicle</th>
-                                <th class="px-8 py-5">Route</th>
-                                <th class="px-8 py-5 text-right">Volume</th>
-                                <th class="px-8 py-5 text-right admin-only">Action</th>
+                                <th class="px-6 py-4">Date</th>
+                                <th class="px-6 py-4">Plate #</th>
+                                <th class="px-6 py-4">Details</th>
+                                <th class="px-6 py-4 text-right">Liters</th>
+                                <th class="px-6 py-4 text-right admin-only">Action</th>
                             </tr>
                         </thead>
-                        <tbody id="logTable" class="divide-y divide-slate-50"></tbody>
+                        <tbody id="logTable" class="text-slate-600"></tbody>
                     </table>
                 </div>
             </div>
 
-            <div id="view-admin" class="hidden max-w-4xl mx-auto space-y-8">
-                <div class="flex items-center gap-4 mb-2">
-                    <div class="h-8 w-2 bg-emerald-500 rounded-full"></div>
-                    <h2 class="text-2xl font-black">System Management</h2>
+            <div id="view-admin" class="hidden max-w-4xl mx-auto space-y-6">
+                <div class="flex gap-2 border-b">
+                    <button onclick="tab('users')" id="t-users" class="px-4 py-2 font-bold text-sm border-b-2 border-emerald-600 text-emerald-600">Users</button>
+                    <button onclick="tab('cars')" id="t-cars" class="px-4 py-2 font-bold text-sm text-slate-400">Vehicles</button>
+                    <button onclick="tab('roads')" id="t-roads" class="px-4 py-2 font-bold text-sm text-slate-400">Routes</button>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="space-y-4">
-                        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
-                            <h3 class="text-xs font-black uppercase text-slate-400 mb-4">Register Vehicle Asset</h3>
-                            <div class="space-y-3">
-                                <input type="text" id="vPlate" placeholder="Plate Number" class="w-full p-4 rounded-xl bg-slate-50 font-bold uppercase text-sm">
-                                <input type="text" id="vType" placeholder="Model (Toyota, Solati...)" class="w-full p-4 rounded-xl bg-slate-50 font-bold text-sm">
-                                <button onclick="addVehicle()" class="w-full bg-emerald-600 text-white py-4 rounded-xl font-black text-xs uppercase">Save Asset</button>
-                            </div>
-                        </div>
-                        <div id="list-cars" class="grid grid-cols-1 gap-2"></div>
-                    </div>
+                <div id="sec-users" class="space-y-4">
+                    <form id="uForm" class="flex gap-2">
+                        <input type="text" id="uName" placeholder="New Username" class="flex-1 p-3 rounded border text-sm outline-none" required>
+                        <input type="password" id="uPass" placeholder="Password" class="flex-1 p-3 rounded border text-sm outline-none" required>
+                        <button type="submit" class="bg-slate-900 text-white px-6 rounded-lg font-bold text-xs uppercase">Create</button>
+                    </form>
+                    <div id="list-users" class="grid grid-cols-1 md:grid-cols-2 gap-2"></div>
+                </div>
 
-                    <div class="space-y-4">
-                        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
-                            <h3 class="text-xs font-black uppercase text-slate-400 mb-4">Add Global Routes</h3>
-                            <div class="flex gap-2">
-                                <input type="text" id="rName" placeholder="Route Name" class="flex-1 p-4 rounded-xl bg-slate-50 font-bold text-sm">
-                                <button onclick="addRoute()" class="bg-slate-900 text-white px-6 rounded-xl font-black text-xl">+</button>
-                            </div>
-                        </div>
-                        <div id="list-roads" class="grid grid-cols-1 gap-2"></div>
+                <div id="sec-cars" class="hidden space-y-4">
+                    <div class="flex gap-2">
+                        <input type="text" id="vPlate" placeholder="Plate #" class="flex-1 p-3 rounded border text-sm font-bold uppercase outline-none">
+                        <input type="text" id="vTypeManual" placeholder="Type" class="flex-1 p-3 rounded border text-sm outline-none">
+                        <button onclick="addVehicle()" class="bg-emerald-600 text-white px-6 rounded-lg font-bold text-xs uppercase">Register</button>
                     </div>
+                    <div id="list-cars" class="grid grid-cols-1 md:grid-cols-2 gap-2"></div>
+                </div>
+
+                <div id="sec-roads" class="hidden space-y-4">
+                    <div class="flex gap-2">
+                        <input type="text" id="rName" placeholder="New Route" class="flex-1 p-3 rounded border text-sm outline-none">
+                        <button onclick="addRoute()" class="bg-slate-900 text-white px-6 rounded-lg font-bold text-lg">+</button>
+                    </div>
+                    <div id="list-roads" class="grid grid-cols-2 md:grid-cols-4 gap-2"></div>
                 </div>
             </div>
         </main>
@@ -176,7 +152,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, deleteDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // Your Credentials
+        // --- Your Specific Firebase Config ---
         const firebaseConfig = {
             apiKey: "AIzaSyDITjn7k_fWas0YJgOYh5daG3YARqWe9n0",
             authDomain: "cl21-oil-system.firebaseapp.com",
@@ -188,155 +164,183 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        
-        let session = null;
-        let logs = [];
-        let config = { vehicles: [], routes: ['Phnom Penh'] };
+        const firestore = getFirestore(app);
 
-        // --- REAL-TIME DATA SYNC ---
-        
-        // Settings Sync
-        onSnapshot(doc(db, "settings", "config"), (snapshot) => {
-            if(snapshot.exists()) { 
-                config = snapshot.data(); 
-                refreshUI(); 
+        let session = null;
+        let db = {
+            users: [],
+            config: { vehicles: [], routes: ['Phnom Penh'] },
+            logs: []
+        };
+
+        // --- REAL-TIME LISTENERS (Replaces LocalStorage) ---
+
+        // 1. Sync Users
+        onSnapshot(collection(firestore, "users"), (snapshot) => {
+            db.users = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            if (db.users.length === 0) {
+                // Seed default admin if none exist
+                setDoc(doc(firestore, "users", "admin_default"), { u: 'admin', p: 'cambo@123', role: 'admin' });
+            }
+            refresh();
+        });
+
+        // 2. Sync Config (Vehicles/Routes)
+        onSnapshot(doc(firestore, "settings", "config"), (snapshot) => {
+            if (snapshot.exists()) {
+                db.config = snapshot.data();
+                refresh();
             } else {
-                setDoc(doc(db, "settings", "config"), config);
+                setDoc(doc(firestore, "settings", "config"), db.config);
             }
         });
 
-        // Logs Sync
-        const q = query(collection(db, "oil_logs"), orderBy("date", "desc"));
+        // 3. Sync Logs
+        const q = query(collection(firestore, "oil_logs"), orderBy("date", "desc"));
         onSnapshot(q, (snapshot) => {
-            logs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            db.logs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             renderLogs();
         });
 
-        // --- AUTH & NAVIGATION ---
-
-        document.getElementById('loginForm').onsubmit = (e) => {
-            e.preventDefault();
-            const u = document.getElementById('uIn').value;
-            const p = document.getElementById('pIn').value;
-            
-            if(u === 'admin' && p === 'cambo@123') {
-                session = { u: 'a-oun', role: 'admin' };
-                document.body.classList.add('is-admin');
-                document.getElementById('loginSection').style.display = 'none';
-                document.getElementById('app').classList.remove('hidden');
-                document.getElementById('displayUser').innerText = 'a-oun';
-                initTerminal();
-            } else {
-                alert("Access Denied");
-            }
-        };
+        // --- UI FUNCTIONS ---
 
         window.nav = (v) => {
             document.getElementById('view-dash').classList.toggle('hidden', v !== 'dash');
             document.getElementById('view-admin').classList.toggle('hidden', v !== 'admin');
+            document.getElementById('d-dash').className = (v==='dash') ? "w-full text-left px-4 py-3 rounded-lg font-bold text-sm bg-emerald-50 text-emerald-700" : "w-full text-left px-4 py-3 rounded-lg font-bold text-sm text-slate-500 hover:bg-slate-50";
+            document.getElementById('d-admin').className = (v==='admin') ? "admin-only w-full text-left px-4 py-3 rounded-lg font-bold text-sm bg-emerald-50 text-emerald-700" : "admin-only w-full text-left px-4 py-3 rounded-lg font-bold text-sm text-slate-500 hover:bg-slate-50";
             document.getElementById('m-dash').classList.toggle('active', v === 'dash');
             document.getElementById('m-admin').classList.toggle('active', v === 'admin');
-            document.getElementById('d-dash').className = (v==='dash') ? "w-full text-left px-5 py-4 rounded-2xl font-bold text-sm bg-emerald-50 text-emerald-700" : "w-full text-left px-5 py-4 rounded-2xl font-bold text-sm text-slate-500 hover:bg-slate-50";
-            document.getElementById('d-admin').className = (v==='admin') ? "admin-only w-full text-left px-5 py-4 rounded-2xl font-bold text-sm bg-emerald-50 text-emerald-700" : "admin-only w-full text-left px-5 py-4 rounded-2xl font-bold text-sm text-slate-500 hover:bg-slate-50";
+        }
+
+        window.tab = (t) => {
+            ['users', 'cars', 'roads'].forEach(x => {
+                document.getElementById(`sec-${x}`).classList.toggle('hidden', x !== t);
+                document.getElementById(`t-${x}`).className = (x===t) ? "px-4 py-2 font-bold text-sm border-b-2 border-emerald-600 text-emerald-600" : "px-4 py-2 font-bold text-sm text-slate-400";
+            });
+        }
+
+        document.getElementById('loginForm').onsubmit = (e) => {
+            e.preventDefault();
+            const user = db.users.find(x => x.u === document.getElementById('uIn').value && x.p === document.getElementById('pIn').value);
+            if(user) {
+                session = user;
+                if(user.role === 'admin') document.body.classList.add('is-admin');
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('app').classList.remove('hidden');
+                init();
+            } else alert("Invalid username or password");
         };
 
-        function initTerminal() {
+        function init() {
             const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-            document.getElementById('fMonth').innerHTML = '<option value="all">Full Year</option>' + months.map((m, i) => `<option value="${i}">${m.toUpperCase()}</option>`).join('');
+            document.getElementById('fMonth').innerHTML = '<option value="all">Any Month</option>' + months.map((m, i) => `<option value="${i}">${m.toUpperCase()}</option>`).join('');
             let ys = '<option value="all">Any Year</option>'; for(let y=2026; y<=2030; y++) ys += `<option value="${y}">${y}</option>`;
             document.getElementById('fYear').innerHTML = ys;
             document.getElementById('fMonth').value = new Date().getMonth();
             document.getElementById('fYear').value = new Date().getFullYear();
             document.getElementById('iDate').valueAsDate = new Date();
-            refreshUI();
+            refresh();
         }
-
-        // --- CORE FUNCTIONS ---
 
         window.renderLogs = () => {
             const m = document.getElementById('fMonth').value;
             const y = document.getElementById('fYear').value;
             let total = 0;
 
-            const filtered = logs.filter(l => {
+            const filtered = db.logs.filter(l => {
                 const d = new Date(l.date);
+                const userMatch = (session.role === 'admin' || l.user === session.u);
                 const monthMatch = (m === 'all' || d.getMonth().toString() === m);
                 const yearMatch = (y === 'all' || d.getFullYear().toString() === y);
-                return monthMatch && yearMatch;
+                return userMatch && monthMatch && yearMatch;
             });
 
             document.getElementById('logTable').innerHTML = filtered.map(l => {
                 total += l.amt;
-                return `<tr class="hover:bg-slate-50 transition-colors">
-                    <td class="px-8 py-5 text-xs font-bold text-slate-400">${new Date(l.date).toLocaleDateString()}</td>
-                    <td class="px-8 py-5">
-                        <p class="font-bold text-slate-900">${l.plate}</p>
-                        <p class="text-[10px] font-bold text-emerald-500 uppercase">${l.type}</p>
-                    </td>
-                    <td class="px-8 py-5 text-xs font-semibold text-slate-600">${l.route}</td>
-                    <td class="px-8 py-5 text-right font-black text-slate-900">${l.amt.toFixed(2)}L</td>
-                    <td class="px-8 py-5 text-right admin-only"><button onclick="delLog('${l.id}')" class="text-red-300 hover:text-red-500 text-xl">×</button></td>
+                return `<tr>
+                    <td class="px-6 py-4 text-xs font-medium text-slate-400">${new Date(l.date).toLocaleDateString()}</td>
+                    <td class="px-6 py-4 font-bold text-slate-900">${l.plate}</td>
+                    <td class="px-6 py-4 text-xs font-semibold">${l.type} <span class="text-slate-300 mx-1">/</span> ${l.route}</td>
+                    <td class="px-6 py-4 text-right font-bold text-emerald-600">${l.amt.toFixed(2)}L</td>
+                    <td class="px-6 py-4 text-right admin-only"><button onclick="delLog('${l.id}')" class="text-red-300 hover:text-red-600 px-2">Delete</button></td>
                 </tr>`;
-            }).join('') || '<tr><td colspan="5" class="py-20 text-center text-slate-300 font-bold uppercase tracking-widest">No Cloud Records</td></tr>';
+            }).join('') || '<tr><td colspan="5" class="py-10 text-center text-slate-300">No records found</td></tr>';
 
-            document.getElementById('totalDisplay').innerText = total.toFixed(2);
-        };
+            document.getElementById('totalDisplay').innerText = total.toFixed(2) + " L";
+        }
 
         document.getElementById('oilForm').onsubmit = async (e) => {
             e.preventDefault();
             const plate = document.getElementById('iPlate').value;
-            const vehicle = config.vehicles.find(v => v.plate === plate);
-            if(!vehicle) return alert("Select vehicle");
-
-            await addDoc(collection(db, "oil_logs"), {
-                plate, type: vehicle.type, 
-                route: document.getElementById('iRoute').value,
-                amt: parseFloat(document.getElementById('iAmt').value),
-                date: new Date(document.getElementById('iDate').value).toISOString(),
-                user: session.u
+            if(!plate) return;
+            const type = db.config.vehicles.find(v => v.plate === plate).type;
+            
+            await addDoc(collection(firestore, "oil_logs"), {
+                plate, 
+                type, 
+                route: document.getElementById('iRoute').value, 
+                amt: parseFloat(document.getElementById('iAmt').value), 
+                user: session.u, 
+                date: new Date(document.getElementById('iDate').value).toISOString() 
             });
+            
             document.getElementById('iAmt').value = '';
         };
 
-        window.delLog = async (id) => { if(confirm("Erase entry?")) await deleteDoc(doc(db, "oil_logs", id)); };
-
-        window.addVehicle = async () => {
-            const plate = document.getElementById('vPlate').value.toUpperCase();
-            const type = document.getElementById('vType').value.toUpperCase();
-            if(!plate || !type) return;
-            config.vehicles.push({ plate, type });
-            await setDoc(doc(db, "settings", "config"), config);
-            document.getElementById('vPlate').value = ''; document.getElementById('vType').value = '';
+        window.delLog = async (id) => { if(confirm("Confirm delete?")){ await deleteDoc(doc(firestore, "oil_logs", id)); }};
+        
+        window.syncType = () => { const v = db.config.vehicles.find(x => x.plate === document.getElementById('iPlate').value); document.getElementById('iType').value = v ? v.type : ''; };
+        
+        window.addVehicle = async () => { 
+            const p = document.getElementById('vPlate').value.trim(); 
+            const t = document.getElementById('vTypeManual').value.trim(); 
+            if(!p || !t) return; 
+            db.config.vehicles.push({ plate: p.toUpperCase(), type: t.toUpperCase() }); 
+            await setDoc(doc(firestore, "settings", "config"), db.config);
+            document.getElementById('vPlate').value = ''; 
+            document.getElementById('vTypeManual').value = ''; 
         };
 
-        window.addRoute = async () => {
-            const r = document.getElementById('rName').value.trim();
-            if(!r) return;
-            config.routes.push(r);
-            await setDoc(doc(db, "settings", "config"), config);
-            document.getElementById('rName').value = '';
+        window.addRoute = async () => { 
+            const r = document.getElementById('rName').value.trim(); 
+            if(!r) return; 
+            db.config.routes.push(r); 
+            await setDoc(doc(firestore, "settings", "config"), db.config);
+            document.getElementById('rName').value = ''; 
         };
 
-        function refreshUI() {
-            document.getElementById('iPlate').innerHTML = '<option value="">Vehicle Plate</option>' + config.vehicles.map(v => `<option value="${v.plate}">${v.plate}</option>`).join('');
-            document.getElementById('iRoute').innerHTML = config.routes.map(r => `<option>${r}</option>`).join('');
-            document.getElementById('list-cars').innerHTML = config.vehicles.map((v, i) => `<div class="p-4 bg-white border border-slate-100 rounded-xl flex justify-between items-center text-xs font-bold uppercase shadow-sm"><span>${v.plate} <span class="text-emerald-500 font-bold">(${v.type})</span></span> <button onclick="config.vehicles.splice(${i},1); setDoc(doc(db, 'settings', 'config'), config)" class="text-red-300">DEL</button></div>`).join('');
-            document.getElementById('list-roads').innerHTML = config.routes.map((r, i) => `<div class="p-4 bg-white border border-slate-100 rounded-xl flex justify-between items-center text-xs font-bold uppercase shadow-sm">${r} <button onclick="config.routes.splice(${i},1); setDoc(doc(db, 'settings', 'config'), config)" class="text-red-300 text-lg">×</button></div>`).join('');
+        document.getElementById('uForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const u = document.getElementById('uName').value.trim();
+            const p = document.getElementById('uPass').value.trim();
+            await addDoc(collection(firestore, "users"), { u, p, role: 'staff' });
+            document.getElementById('uName').value = '';
+            document.getElementById('uPass').value = '';
+        };
+
+        window.delUser = async (id) => {
+            if(confirm("Delete this user?")) await deleteDoc(doc(firestore, "users", id));
+        };
+
+        function refresh() {
+            renderLogs();
+            document.getElementById('list-users').innerHTML = db.users.map((u) => `<div class="p-3 bg-white border rounded flex justify-between items-center text-xs font-bold uppercase shadow-sm">${u.u} ${u.u !== 'admin' ? `<button onclick="delUser('${u.id}')" class="text-red-400">DEL</button>` : ''}</div>`).join('');
+            document.getElementById('list-cars').innerHTML = db.config.vehicles.map((v, i) => `<div class="p-3 bg-white border rounded flex justify-between items-center text-xs font-bold uppercase shadow-sm">${v.plate} <span class="text-slate-300">(${v.type})</span> <button onclick="db.config.vehicles.splice(${i},1); setDoc(doc(firestore, 'settings', 'config'), db.config)" class="text-red-400">DEL</button></div>`).join('');
+            document.getElementById('list-roads').innerHTML = db.config.routes.map((r, i) => `<div class="p-2 bg-white border rounded flex justify-between items-center text-[10px] font-bold shadow-sm">${r} <button onclick="db.config.routes.splice(${i},1); setDoc(doc(firestore, 'settings', 'config'), db.config)" class="text-red-400">×</button></div>`).join('');
+            document.getElementById('iPlate').innerHTML = '<option value="">Select Plate</option>' + db.config.vehicles.map(v => `<option value="${v.plate}">${v.plate}</option>`).join('');
+            document.getElementById('iRoute').innerHTML = db.config.routes.map(r => `<option>${r}</option>`).join('');
             syncType();
         }
 
-        window.syncType = () => {
-            const v = config.vehicles.find(x => x.plate === document.getElementById('iPlate').value);
-            document.getElementById('iType').value = v ? v.type : '';
-        };
-
         window.exportData = () => {
             let csv = "Date,Plate,Type,Route,User,Liters\n";
-            logs.forEach(l => csv += `${new Date(l.date).toLocaleDateString()},${l.plate},${l.type},${l.route},${l.user},${l.amt}\n`);
+            db.logs.forEach(l => csv += `${new Date(l.date).toLocaleDateString()},${l.plate},${l.type},${l.route},${l.user},${l.amt}\n`);
             const blob = new Blob([csv], { type: 'text/csv' });
-            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'Oil_Report_Full.csv'; a.click();
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'CL21_Report.csv'; a.click();
         };
     </script>
 </body>
 </html>
+
+```
