@@ -55,9 +55,7 @@
         </nav>
 
         <main class="flex-1 p-4 lg:p-10">
-            
             <div id="view-dash" class="max-w-5xl mx-auto space-y-6">
-                
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
                         <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Calculated Total (Liters)</p>
@@ -79,7 +77,12 @@
                     <h3 class="text-xs font-bold uppercase text-slate-400 mb-4">Add Fuel Record</h3>
                     <form id="oilForm" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                         <input type="date" id="iDate" required class="p-3 bg-slate-50 rounded border text-sm font-medium outline-none">
-                        <select id="iPlate" onchange="syncType()" required class="p-3 bg-slate-50 rounded border text-sm font-medium outline-none"></select>
+                        
+                        <div class="relative">
+                            <input list="plateOptions" id="iPlate" onchange="syncType()" placeholder="Type Plate #" required class="w-full p-3 bg-slate-50 rounded border text-sm font-bold uppercase outline-none">
+                            <datalist id="plateOptions"></datalist>
+                        </div>
+
                         <input type="text" id="iType" readonly class="p-3 bg-slate-100 rounded border text-sm font-medium text-slate-400" placeholder="Model Class">
                         <select id="iRoute" required class="p-3 bg-slate-50 rounded border text-sm font-medium outline-none"></select>
                         <input type="number" id="iAmt" step="0.01" required placeholder="Liters (L)" class="p-3 bg-emerald-50 rounded border border-emerald-100 text-sm font-bold text-emerald-700">
@@ -109,7 +112,6 @@
                     <button onclick="tab('cars')" id="t-cars" class="px-4 py-2 font-bold text-sm text-slate-400">Vehicles</button>
                     <button onclick="tab('roads')" id="t-roads" class="px-4 py-2 font-bold text-sm text-slate-400">Routes</button>
                 </div>
-
                 <div id="sec-users" class="space-y-4">
                     <form id="uForm" class="flex gap-2">
                         <input type="text" id="uName" placeholder="New Username" class="flex-1 p-3 rounded border text-sm outline-none" required>
@@ -118,7 +120,6 @@
                     </form>
                     <div id="list-users" class="grid grid-cols-1 md:grid-cols-2 gap-2"></div>
                 </div>
-
                 <div id="sec-cars" class="hidden space-y-4">
                     <div class="flex gap-2">
                         <input type="text" id="vPlate" placeholder="Plate #" class="flex-1 p-3 rounded border text-sm font-bold uppercase outline-none">
@@ -128,7 +129,6 @@
                     <input type="text" id="vSearch" oninput="refresh()" placeholder="Search Vehicles..." class="w-full p-2 rounded border text-xs outline-none bg-slate-50">
                     <div id="list-cars" class="grid grid-cols-1 md:grid-cols-2 gap-2"></div>
                 </div>
-
                 <div id="sec-roads" class="hidden space-y-4">
                     <div class="flex gap-2">
                         <input type="text" id="rName" placeholder="New Route" class="flex-1 p-3 rounded border text-sm outline-none">
@@ -160,9 +160,8 @@
 
         let session = null;
         let db = { users: [], config: { vehicles: [], routes: ['Phnom Penh'] }, logs: [] };
-        let filteredResults = []; // Store current visible logs for CSV export
+        let filteredResults = [];
 
-        // FIREBASE LISTENERS
         onSnapshot(collection(firestore, "users"), (s) => {
             db.users = s.docs.map(d => ({ id: d.id, ...d.data() }));
             if (db.users.length === 0) setDoc(doc(firestore, "users", "admin_default"), { u: 'admin', p: 'cambo@123', role: 'admin' });
@@ -179,7 +178,6 @@
             renderLogs();
         });
 
-        // NAVIGATION
         window.nav = (v) => {
             document.getElementById('view-dash').classList.toggle('hidden', v !== 'dash');
             document.getElementById('view-admin').classList.toggle('hidden', v !== 'admin');
@@ -196,7 +194,6 @@
             });
         }
 
-        // LOGIN
         document.getElementById('loginForm').onsubmit = (e) => {
             e.preventDefault();
             const user = db.users.find(x => x.u === document.getElementById('uIn').value && x.p === document.getElementById('pIn').value);
@@ -220,12 +217,10 @@
             refresh();
         }
 
-        // RENDER LOGS WITH FILTERS
         window.renderLogs = () => {
             const m = document.getElementById('fMonth').value;
             const y = document.getElementById('fYear').value;
             let total = 0;
-
             filteredResults = db.logs.filter(l => {
                 const d = new Date(l.date);
                 const userMatch = (session.role === 'admin' || l.user === session.u);
@@ -233,7 +228,6 @@
                 const yearMatch = (y === 'all' || d.getFullYear().toString() === y);
                 return userMatch && monthMatch && yearMatch;
             });
-
             document.getElementById('logTable').innerHTML = filteredResults.map(l => {
                 total += l.amt;
                 return `<tr>
@@ -244,11 +238,9 @@
                     <td class="px-6 py-4 text-right admin-only"><button onclick="delLog('${l.id}')" class="text-red-300 hover:text-red-600 px-2">Delete</button></td>
                 </tr>`;
             }).join('') || '<tr><td colspan="5" class="py-10 text-center text-slate-300">No records found</td></tr>';
-
             document.getElementById('totalDisplay').innerText = total.toFixed(2) + " L";
         }
 
-        // CSV EXPORT (Smart Logic)
         window.exportData = () => {
             if(filteredResults.length === 0) return alert("No data to export");
             let csv = "Date,Plate,Type,Route,User,Liters\n";
@@ -257,35 +249,25 @@
             const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'CL21_Report.csv'; a.click();
         };
 
-        // ADMIN FUNCTIONS
         window.refresh = () => {
             renderLogs();
             const vS = document.getElementById('vSearch').value.toUpperCase();
             const rS = document.getElementById('rSearch').value.toUpperCase();
-
             document.getElementById('list-users').innerHTML = db.users.map((u) => `<div class="p-3 bg-white border rounded flex justify-between items-center text-xs font-bold uppercase shadow-sm">${u.u} ${u.u !== 'admin' ? `<button onclick="delUser('${u.id}')" class="text-red-400">DEL</button>` : ''}</div>`).join('');
+            document.getElementById('list-cars').innerHTML = db.config.vehicles.filter(v => v.plate.includes(vS)).map((v, i) => `<div class="p-3 bg-white border rounded flex justify-between items-center text-xs font-bold uppercase shadow-sm">${v.plate} <span class="text-slate-300">(${v.type})</span> <button onclick="delV('${v.plate}')" class="text-red-400">DEL</button></div>`).join('');
+            document.getElementById('list-roads').innerHTML = db.config.routes.filter(r => r.toUpperCase().includes(rS)).map((r, i) => `<div class="p-2 bg-white border rounded flex justify-between items-center text-[10px] font-bold shadow-sm">${r} <button onclick="delR('${r}')" class="text-red-400">×</button></div>`).join('');
             
-            // Filtered Vehicle List
-            document.getElementById('list-cars').innerHTML = db.config.vehicles
-                .filter(v => v.plate.includes(vS))
-                .map((v, i) => `<div class="p-3 bg-white border rounded flex justify-between items-center text-xs font-bold uppercase shadow-sm">${v.plate} <span class="text-slate-300">(${v.type})</span> <button onclick="delV('${v.plate}')" class="text-red-400">DEL</button></div>`).join('');
-            
-            // Filtered Route List
-            document.getElementById('list-roads').innerHTML = db.config.routes
-                .filter(r => r.toUpperCase().includes(rS))
-                .map((r, i) => `<div class="p-2 bg-white border rounded flex justify-between items-center text-[10px] font-bold shadow-sm">${r} <button onclick="delR('${r}')" class="text-red-400">×</button></div>`).join('');
-            
-            document.getElementById('iPlate').innerHTML = '<option value="">Select Plate</option>' + db.config.vehicles.map(v => `<option value="${v.plate}">${v.plate}</option>`).join('');
+            // Sync searchable options
+            document.getElementById('plateOptions').innerHTML = db.config.vehicles.map(v => `<option value="${v.plate}">`).join('');
             document.getElementById('iRoute').innerHTML = db.config.routes.map(r => `<option>${r}</option>`).join('');
             syncType();
         }
 
-        // CRUD ACTIONS
         window.addVehicle = async () => { 
-            const p = document.getElementById('vPlate').value.trim(); 
-            const t = document.getElementById('vTypeManual').value.trim(); 
+            const p = document.getElementById('vPlate').value.trim().toUpperCase(); 
+            const t = document.getElementById('vTypeManual').value.trim().toUpperCase(); 
             if(!p || !t) return; 
-            db.config.vehicles.push({ plate: p.toUpperCase(), type: t.toUpperCase() }); 
+            db.config.vehicles.push({ plate: p, type: t }); 
             await setDoc(doc(firestore, "settings", "config"), db.config);
             document.getElementById('vPlate').value = ''; document.getElementById('vTypeManual').value = ''; 
         };
@@ -295,15 +277,19 @@
 
         document.getElementById('oilForm').onsubmit = async (e) => {
             e.preventDefault();
-            const plate = document.getElementById('iPlate').value;
-            if(!plate) return;
-            const type = db.config.vehicles.find(v => v.plate === plate).type;
-            await addDoc(collection(firestore, "oil_logs"), { plate, type, route: document.getElementById('iRoute').value, amt: parseFloat(document.getElementById('iAmt').value), user: session.u, date: new Date(document.getElementById('iDate').value).toISOString() });
-            document.getElementById('iAmt').value = '';
+            const plate = document.getElementById('iPlate').value.toUpperCase();
+            const v = db.config.vehicles.find(v => v.plate === plate);
+            if(!v) return alert("Vehicle Plate Not Found in Fleet!");
+            await addDoc(collection(firestore, "oil_logs"), { plate, type: v.type, route: document.getElementById('iRoute').value, amt: parseFloat(document.getElementById('iAmt').value), user: session.u, date: new Date(document.getElementById('iDate').value).toISOString() });
+            document.getElementById('iAmt').value = ''; document.getElementById('iPlate').value = '';
         };
 
         window.delLog = async (id) => { if(confirm("Confirm delete?")){ await deleteDoc(doc(firestore, "oil_logs", id)); }};
-        window.syncType = () => { const v = db.config.vehicles.find(x => x.plate === document.getElementById('iPlate').value); document.getElementById('iType').value = v ? v.type : ''; };
+        window.syncType = () => { 
+            const plate = document.getElementById('iPlate').value.toUpperCase();
+            const v = db.config.vehicles.find(x => x.plate === plate); 
+            document.getElementById('iType').value = v ? v.type : ''; 
+        };
         window.addRoute = async () => { const r = document.getElementById('rName').value.trim(); if(!r) return; db.config.routes.push(r); await setDoc(doc(firestore, "settings", "config"), db.config); document.getElementById('rName').value = ''; };
         window.delUser = async (id) => { if(confirm("Delete this user?")) await deleteDoc(doc(firestore, "users", id)); };
     </script>
