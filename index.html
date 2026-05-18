@@ -3,23 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CL21 | Oil-Control</title>
+    <title>CL21 | Clean Management</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
         body { font-family: 'Inter', sans-serif; background: #f1f5f9; color: #1e293b; }
-        
         .admin-only { display: none !important; }
         body.is-admin .admin-only { display: block !important; }
-
         tr { border-bottom: 1px solid #e2e8f0; }
         tr:last-child { border: none; }
-        
         .m-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #e2e8f0; display: flex; height: 65px; z-index: 50; }
         .m-nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: #94a3b8; border: none; background: transparent; }
         .m-nav-btn.active { color: #059669; }
-
         input, select { border: 1px solid #e2e8f0 !important; }
     </style>
 </head>
@@ -38,7 +34,6 @@
     </div>
 
     <div id="app" class="hidden flex flex-col lg:flex-row min-h-screen">
-        
         <aside class="hidden lg:flex w-64 bg-white border-r flex-col p-6 sticky top-0 h-screen">
             <div class="font-bold text-xl mb-10 tracking-tight text-emerald-600">CL21_OIL</div>
             <nav class="flex-1 space-y-1">
@@ -62,14 +57,15 @@
                         <h2 class="text-4xl font-extrabold text-slate-900" id="totalDisplay">0.00</h2>
                     </div>
                     <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex items-center gap-3">
-                        <div class="flex-1">
-                            <p class="text-[10px] font-bold text-slate-400 uppercase mb-2">Filter Data</p>
+                        <div class="flex-1 space-y-2">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase">Filter & Search</p>
                             <div class="flex gap-2">
-                                <select id="fMonth" onchange="renderLogs()" class="flex-1 p-2 rounded border text-xs font-bold bg-slate-50 outline-none"></select>
-                                <select id="fYear" onchange="renderLogs()" class="flex-1 p-2 rounded border text-xs font-bold bg-slate-50 outline-none"></select>
+                                <select id="fMonth" onchange="renderLogs()" class="flex-1 p-2 rounded border text-[10px] font-bold bg-slate-50 outline-none"></select>
+                                <select id="fYear" onchange="renderLogs()" class="flex-1 p-2 rounded border text-[10px] font-bold bg-slate-50 outline-none"></select>
                             </div>
+                            <input type="text" id="fSearch" oninput="renderLogs()" placeholder="Search Plate Number..." class="w-full p-2 rounded border text-xs font-bold uppercase outline-none bg-white">
                         </div>
-                        <button onclick="exportData()" class="bg-slate-900 text-white px-4 py-3 rounded-lg text-xs font-bold uppercase"><i class="fa-solid fa-download"></i></button>
+                        <button onclick="exportData()" class="bg-slate-900 text-white px-4 py-5 rounded-lg text-xs font-bold uppercase"><i class="fa-solid fa-download"></i></button>
                     </div>
                 </div>
 
@@ -77,12 +73,10 @@
                     <h3 class="text-xs font-bold uppercase text-slate-400 mb-4">Add Fuel Record</h3>
                     <form id="oilForm" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                         <input type="date" id="iDate" required class="p-3 bg-slate-50 rounded border text-sm font-medium outline-none">
-                        
                         <div class="relative">
                             <input list="plateOptions" id="iPlate" onchange="syncType()" placeholder="Type Plate #" required class="w-full p-3 bg-slate-50 rounded border text-sm font-bold uppercase outline-none">
                             <datalist id="plateOptions"></datalist>
                         </div>
-
                         <input type="text" id="iType" readonly class="p-3 bg-slate-100 rounded border text-sm font-medium text-slate-400" placeholder="Model Class">
                         <select id="iRoute" required class="p-3 bg-slate-50 rounded border text-sm font-medium outline-none"></select>
                         <input type="number" id="iAmt" step="0.01" required placeholder="Liters (L)" class="p-3 bg-emerald-50 rounded border border-emerald-100 text-sm font-bold text-emerald-700">
@@ -220,13 +214,15 @@
         window.renderLogs = () => {
             const m = document.getElementById('fMonth').value;
             const y = document.getElementById('fYear').value;
+            const s = document.getElementById('fSearch').value.toUpperCase();
             let total = 0;
             filteredResults = db.logs.filter(l => {
                 const d = new Date(l.date);
                 const userMatch = (session.role === 'admin' || l.user === session.u);
                 const monthMatch = (m === 'all' || d.getMonth().toString() === m);
                 const yearMatch = (y === 'all' || d.getFullYear().toString() === y);
-                return userMatch && monthMatch && yearMatch;
+                const searchMatch = l.plate.includes(s);
+                return userMatch && monthMatch && yearMatch && searchMatch;
             });
             document.getElementById('logTable').innerHTML = filteredResults.map(l => {
                 total += l.amt;
@@ -256,12 +252,20 @@
             document.getElementById('list-users').innerHTML = db.users.map((u) => `<div class="p-3 bg-white border rounded flex justify-between items-center text-xs font-bold uppercase shadow-sm">${u.u} ${u.u !== 'admin' ? `<button onclick="delUser('${u.id}')" class="text-red-400">DEL</button>` : ''}</div>`).join('');
             document.getElementById('list-cars').innerHTML = db.config.vehicles.filter(v => v.plate.includes(vS)).map((v, i) => `<div class="p-3 bg-white border rounded flex justify-between items-center text-xs font-bold uppercase shadow-sm">${v.plate} <span class="text-slate-300">(${v.type})</span> <button onclick="delV('${v.plate}')" class="text-red-400">DEL</button></div>`).join('');
             document.getElementById('list-roads').innerHTML = db.config.routes.filter(r => r.toUpperCase().includes(rS)).map((r, i) => `<div class="p-2 bg-white border rounded flex justify-between items-center text-[10px] font-bold shadow-sm">${r} <button onclick="delR('${r}')" class="text-red-400">×</button></div>`).join('');
-            
-            // Sync searchable options
             document.getElementById('plateOptions').innerHTML = db.config.vehicles.map(v => `<option value="${v.plate}">`).join('');
             document.getElementById('iRoute').innerHTML = db.config.routes.map(r => `<option>${r}</option>`).join('');
             syncType();
         }
+
+        // CREATE USER FIX
+        document.getElementById('uForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const u = document.getElementById('uName').value.trim();
+            const p = document.getElementById('uPass').value.trim();
+            if(!u || !p) return;
+            await addDoc(collection(firestore, "users"), { u, p, role: 'staff' });
+            document.getElementById('uName').value = ''; document.getElementById('uPass').value = '';
+        };
 
         window.addVehicle = async () => { 
             const p = document.getElementById('vPlate').value.trim().toUpperCase(); 
@@ -279,7 +283,7 @@
             e.preventDefault();
             const plate = document.getElementById('iPlate').value.toUpperCase();
             const v = db.config.vehicles.find(v => v.plate === plate);
-            if(!v) return alert("Vehicle Plate Not Found in Fleet!");
+            if(!v) return alert("Vehicle Plate Not Found!");
             await addDoc(collection(firestore, "oil_logs"), { plate, type: v.type, route: document.getElementById('iRoute').value, amt: parseFloat(document.getElementById('iAmt').value), user: session.u, date: new Date(document.getElementById('iDate').value).toISOString() });
             document.getElementById('iAmt').value = ''; document.getElementById('iPlate').value = '';
         };
