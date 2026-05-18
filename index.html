@@ -2,178 +2,153 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CamboLink21 | Oil-Control</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CL21 | Mobile Power</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
         :root { --primary: #10b981; --bg-main: #f8fafc; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-main); color: #0f172a; overflow-x: hidden; }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: var(--bg-main); 
+            color: #0f172a; 
+            -webkit-tap-highlight-color: transparent;
+        }
         
-        /* Power Animations */
-        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(226, 232, 240, 0.5); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-        .glass:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05); }
+        .glass { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); border: 1px solid rgba(226, 232, 240, 0.8); }
         
-        .sidebar-link { transition: all 0.3s ease; }
-        .sidebar-link.active { background: #1e293b; color: white; transform: scale(1.02); box-shadow: 0 10px 20px -5px rgba(30, 41, 59, 0.3); }
-        
-        .btn-power { transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .btn-power:active { transform: scale(0.95); }
-        
-        .input-focus { transition: all 0.3s ease; border: 2px solid transparent; }
-        .input-focus:focus { border-color: #10b981; background: white; box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1); }
+        /* Mobile Bottom Nav */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 70px; background: white; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #e2e8f0; z-index: 100; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); }
+        .nav-btn { display: flex; flex-direction: column; align-items: center; font-size: 10px; font-weight: 800; text-transform: uppercase; color: #94a3b8; transition: 0.3s; }
+        .nav-btn.active { color: #10b981; }
+        .nav-btn i { font-size: 20px; margin-bottom: 4px; }
+
+        /* Card Transitions */
+        .log-card { background: white; border-radius: 24px; padding: 20px; border: 1px solid #f1f5f9; margin-bottom: 12px; transition: 0.3s; }
+        .log-card:active { transform: scale(0.98); background: #f8fafc; }
 
         .admin-only { display: none !important; }
         body.is-admin .admin-only { display: block !important; }
 
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        .animate-bg { background: linear-gradient(-45deg, #0f172a, #1e293b, #0f172a, #334155); background-size: 400% 400%; animation: gradientBG 15s ease infinite; }
+        /* Hide Scrollbar */
+        ::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="antialiased">
+<body class="antialiased pb-24">
 
-    <div id="loginSection" class="fixed inset-0 z-[100] flex items-center justify-center animate-bg">
-        <div class="bg-white p-10 rounded-[48px] w-full max-w-sm shadow-2xl animate__animated animate__zoomIn">
+    <div id="loginSection" class="fixed inset-0 z-[200] flex items-center justify-center bg-slate-950 p-6">
+        <div class="bg-white p-8 rounded-[40px] w-full max-w-sm shadow-2xl animate__animated animate__zoomIn">
             <div class="text-center mb-8">
-                <div class="w-16 h-16 bg-emerald-500 rounded-2xl flex items-center justify-center text-white mx-auto mb-4 shadow-lg animate__animated animate__bounceInDown">
-                    <i class="fa-solid fa-bolt text-2xl"></i>
+                <div class="w-16 h-16 bg-emerald-500 rounded-2xl flex items-center justify-center text-white mx-auto mb-4 shadow-lg shadow-emerald-200">
+                    <i class="fa-solid fa-bolt-lightning text-2xl"></i>
                 </div>
-                <h1 class="text-2xl font-black tracking-tighter uppercase italic">CamboLink21</h1>
-                <p class="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em]">Fleet Power Control</p>
+                <h1 class="text-2xl font-black tracking-tighter italic">CL21 POWER</h1>
+                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Mobile Terminal</p>
             </div>
             <form id="loginForm" class="space-y-4">
-                <input type="text" id="uIn" placeholder="Username" class="w-full p-4 bg-slate-50 rounded-2xl font-bold outline-none input-focus" required>
-                <input type="password" id="pIn" placeholder="Password" class="w-full p-4 bg-slate-50 rounded-2xl font-bold outline-none input-focus" required>
-                <button type="submit" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest btn-power hover:bg-emerald-600">Authorize System</button>
+                <input type="text" id="uIn" placeholder="Username" class="w-full p-4 bg-slate-50 rounded-2xl font-bold outline-none border-2 border-transparent focus:border-emerald-500 focus:bg-white transition-all" required>
+                <input type="password" id="pIn" placeholder="Password" class="w-full p-4 bg-slate-50 rounded-2xl font-bold outline-none border-2 border-transparent focus:border-emerald-500 focus:bg-white transition-all" required>
+                <button type="submit" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest active:scale-95 transition-transform">Unlock System</button>
             </form>
         </div>
     </div>
 
-    <div id="app" class="hidden min-h-screen flex flex-col lg:flex-row">
-        <aside class="w-full lg:w-72 bg-white border-r flex flex-col p-6 h-screen sticky top-0 z-50">
-            <div class="mb-12 px-4 flex items-center gap-3">
-                <div class="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center text-white shadow-xl">
-                    <i class="fa-solid fa-droplet animate__animated animate__pulse animate__infinite"></i>
-                </div>
-                <span class="font-black text-xl italic tracking-tighter">CL21_POWER</span>
+    <div id="app" class="hidden min-h-screen lg:flex">
+        
+        <aside class="hidden lg:flex w-72 bg-white border-r flex-col p-6 h-screen sticky top-0">
+            <div class="mb-10 px-4 flex items-center gap-3">
+                <div class="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center text-white"><i class="fa-solid fa-droplet"></i></div>
+                <span class="font-black text-xl italic tracking-tighter">CL21_PRO</span>
             </div>
-
-            <nav class="flex-1 space-y-3">
-                <button onclick="nav('dash')" id="nav-dash" class="sidebar-link active w-full flex items-center gap-4 px-6 py-4 rounded-2xl font-bold text-xs uppercase tracking-wider">
-                    <i class="fa-solid fa-gauge-high"></i> Dashboard
-                </button>
-                <button onclick="nav('admin')" id="nav-admin" class="sidebar-link admin-only w-full flex items-center gap-4 px-6 py-4 rounded-2xl font-bold text-xs uppercase tracking-wider text-slate-400 hover:bg-slate-50">
-                    <i class="fa-solid fa-shield-halved"></i> Master Control
-                </button>
+            <nav class="flex-1 space-y-2">
+                <button onclick="nav('dash')" id="desk-dash" class="w-full flex items-center gap-4 px-6 py-4 rounded-2xl font-bold text-xs uppercase transition-all bg-slate-900 text-white">Dashboard</button>
+                <button onclick="nav('admin')" id="desk-admin" class="admin-only w-full flex items-center gap-4 px-6 py-4 rounded-2xl font-bold text-xs uppercase text-slate-400 transition-all">Settings</button>
             </nav>
-
-            <div class="mt-auto border-t pt-6 animate__animated animate__fadeInUp">
-                <p class="text-[9px] font-black text-slate-400 uppercase mb-4 px-4 flex items-center gap-2">
-                    <span class="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></span>
-                    <span id="userTag"></span>
-                </p>
-                <button onclick="location.reload()" class="w-full py-4 text-red-500 font-black text-[10px] uppercase tracking-widest hover:bg-red-50 rounded-2xl transition-all">Sign Out</button>
-            </div>
+            <button onclick="location.reload()" class="py-4 text-red-500 font-black text-[10px] uppercase">Logout</button>
         </aside>
 
-        <main class="flex-1 p-6 lg:p-10 overflow-y-auto">
+        <nav class="lg:hidden bottom-nav">
+            <button onclick="nav('dash')" id="mob-dash" class="nav-btn active"><i class="fa-solid fa-house"></i>Home</button>
+            <button onclick="nav('admin')" id="mob-admin" class="nav-btn admin-only"><i class="fa-solid fa-sliders"></i>Admin</button>
+            <button onclick="location.reload()" class="nav-btn text-red-400"><i class="fa-solid fa-power-off"></i>Exit</button>
+        </nav>
+
+        <main class="flex-1 p-4 lg:p-10 max-w-5xl mx-auto w-full">
             
-            <div id="view-dash" class="max-w-6xl mx-auto space-y-8 animate__animated animate__fadeIn">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-                    <div class="glass p-8 rounded-[40px] min-w-[320px] shadow-xl relative overflow-hidden">
-                        <div class="absolute top-0 right-0 p-4 opacity-10 text-6xl"><i class="fa-solid fa-gas-pump"></i></div>
-                        <p class="text-[10px] font-black text-slate-400 uppercase mb-1 tracking-widest">Total Consumption</p>
-                        <h2 class="text-6xl font-black text-emerald-600 tracking-tighter" id="totalDisplay">0.00</h2>
-                        <span class="text-xs font-bold text-slate-400">Liters Distributed</span>
+            <div id="view-dash" class="animate__animated animate__fadeIn">
+                <div class="flex justify-between items-center mb-6 lg:hidden">
+                    <div>
+                        <h2 class="font-black text-xl italic">DASHBOARD</h2>
+                        <p class="text-[9px] font-black text-slate-400" id="userTagMob"></p>
                     </div>
-                    <div class="flex gap-2 bg-white p-2 rounded-2xl border shadow-sm animate__animated animate__fadeInRight">
-                        <select id="fMonth" onchange="renderLogs()" class="p-2 font-black text-[10px] uppercase outline-none cursor-pointer hover:text-emerald-500 transition-colors"></select>
-                        <select id="fYear" onchange="renderLogs()" class="p-2 font-black text-[10px] uppercase outline-none cursor-pointer hover:text-emerald-500 transition-colors"></select>
+                    <button onclick="exportData()" class="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center"><i class="fa-solid fa-download"></i></button>
+                </div>
+
+                <div class="glass p-6 lg:p-8 rounded-[32px] shadow-xl mb-8 relative overflow-hidden bg-emerald-600 text-white border-none">
+                    <p class="text-[10px] font-black uppercase opacity-60 tracking-[0.2em] mb-1">Total Fuel Volume</p>
+                    <h2 class="text-4xl lg:text-6xl font-black tracking-tighter" id="totalDisplay">0.00 L</h2>
+                    <div class="mt-4 flex gap-2">
+                        <select id="fMonth" onchange="renderLogs()" class="bg-white/10 p-2 rounded-xl text-[10px] font-black uppercase outline-none"></select>
+                        <select id="fYear" onchange="renderLogs()" class="bg-white/10 p-2 rounded-xl text-[10px] font-black uppercase outline-none"></select>
                     </div>
                 </div>
 
-                <div class="bg-white p-10 rounded-[48px] border border-slate-100 shadow-2xl shadow-slate-200/50 animate__animated animate__fadeInUp">
-                    <form id="oilForm" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-                        <div class="space-y-2">
-                            <label class="text-[9px] font-black text-slate-400 uppercase ml-2">Operation Date</label>
-                            <input type="date" id="iDate" required class="w-full p-4 bg-slate-50 rounded-2xl font-bold border-none outline-none input-focus">
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-[9px] font-black text-slate-400 uppercase ml-2">Select Vehicle</label>
-                            <select id="iPlate" onchange="syncType()" required class="w-full p-4 bg-slate-50 rounded-2xl font-bold border-none outline-none cursor-pointer input-focus"></select>
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-[9px] font-black text-slate-400 uppercase ml-2">Specs</label>
-                            <input type="text" id="iType" readonly class="w-full p-4 bg-slate-100 rounded-2xl font-bold border-none text-slate-500 outline-none" placeholder="Auto-Fill">
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-[9px] font-black text-slate-400 uppercase ml-2">Travel Route</label>
-                            <select id="iRoute" required class="w-full p-4 bg-slate-50 rounded-2xl font-bold border-none outline-none cursor-pointer input-focus"></select>
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-[9px] font-black text-slate-400 uppercase ml-2">Fuel Volume (L)</label>
-                            <input type="number" id="iAmt" step="0.01" required placeholder="0.00" class="w-full p-4 bg-emerald-50 rounded-2xl font-black border-none text-emerald-700 outline-none input-focus">
-                        </div>
-                        <button type="submit" class="lg:col-span-5 bg-slate-900 text-white py-5 rounded-2xl font-black text-xs uppercase tracking-widest btn-power hover:bg-emerald-600 shadow-lg">Commit Log to Database</button>
+                <div class="bg-white p-6 lg:p-8 rounded-[32px] border border-slate-100 shadow-lg mb-8">
+                    <h3 class="font-black text-xs uppercase mb-6 tracking-widest text-slate-400">New Entry</h3>
+                    <form id="oilForm" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                        <input type="date" id="iDate" required class="p-4 bg-slate-50 rounded-2xl font-bold outline-none border-none">
+                        <select id="iPlate" onchange="syncType()" required class="p-4 bg-slate-50 rounded-2xl font-bold outline-none border-none"></select>
+                        <input type="text" id="iType" readonly class="p-4 bg-slate-100 rounded-2xl font-bold border-none text-slate-400" placeholder="Type">
+                        <select id="iRoute" required class="p-4 bg-slate-50 rounded-2xl font-bold outline-none border-none"></select>
+                        <input type="number" id="iAmt" step="0.01" required placeholder="Liters (L)" class="p-4 bg-emerald-50 rounded-2xl font-black border-none text-emerald-700 outline-none">
+                        <button type="submit" class="lg:col-span-5 bg-slate-900 text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest active:scale-95 transition-all">Submit Log</button>
                     </form>
                 </div>
 
-                <div class="flex justify-between items-center px-4 animate__animated animate__fadeIn">
-                    <h3 class="font-black text-xs uppercase tracking-[0.2em] text-slate-400">Activity Logs</h3>
-                    <button onclick="exportData()" class="group bg-slate-900 text-white px-8 py-3 rounded-2xl text-[10px] font-black uppercase hover:bg-emerald-600 transition-all shadow-lg flex items-center gap-2">
-                        <i class="fa-solid fa-file-csv group-hover:animate-bounce"></i> Export Data
-                    </button>
-                </div>
-
-                <div class="bg-white rounded-[40px] border border-slate-50 overflow-hidden shadow-xl animate__animated animate__fadeInUp">
+                <h3 class="font-black text-xs uppercase mb-4 px-2 tracking-widest text-slate-400">Recent Records</h3>
+                <div id="mobileLogList" class="lg:hidden"></div> <div class="hidden lg:block bg-white rounded-[32px] border border-slate-50 overflow-hidden shadow-sm">
                     <table class="w-full text-left">
-                        <thead class="bg-slate-50/50 border-b">
-                            <tr class="text-[9px] font-black text-slate-400 uppercase tracking-widest">
-                                <th class="px-8 py-6">Date</th><th class="px-8 py-6">Plate</th><th class="px-8 py-6">Vehicle Class</th><th class="px-8 py-6 text-right">Volume</th><th class="px-8 py-6 text-right admin-only">Action</th>
-                            </tr>
+                        <thead class="bg-slate-50 text-[9px] font-black text-slate-400 uppercase">
+                            <tr><th class="px-8 py-5">Date</th><th class="px-8 py-5">Vehicle</th><th class="px-8 py-5 text-right">Fuel</th><th class="px-8 py-5 text-right admin-only">Del</th></tr>
                         </thead>
                         <tbody id="logTable" class="divide-y text-sm"></tbody>
                     </table>
                 </div>
             </div>
 
-            <div id="view-admin" class="hidden max-w-4xl mx-auto space-y-8 animate__animated animate__fadeIn">
-                <div class="flex bg-slate-200/50 p-2 rounded-[28px] shadow-inner">
-                    <button onclick="tab('users')" id="t-users" class="admin-tab-btn active flex-1 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all">Accounts</button>
-                    <button onclick="tab('cars')" id="t-cars" class="admin-tab-btn flex-1 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all">Vehicles</button>
-                    <button onclick="tab('roads')" id="t-roads" class="admin-tab-btn flex-1 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all">Routes</button>
+            <div id="view-admin" class="hidden animate__animated animate__fadeIn">
+                <div class="flex bg-slate-100 p-1.5 rounded-2xl mb-6">
+                    <button onclick="tab('users')" id="t-users" class="admin-tab-btn active flex-1 py-3 rounded-xl font-black text-[10px] uppercase">Staff</button>
+                    <button onclick="tab('cars')" id="t-cars" class="admin-tab-btn flex-1 py-3 rounded-xl font-black text-[10px] uppercase">Fleet</button>
+                    <button onclick="tab('roads')" id="t-roads" class="admin-tab-btn flex-1 py-3 rounded-xl font-black text-[10px] uppercase">Routes</button>
                 </div>
 
-                <div id="sec-users" class="glass p-10 rounded-[48px] space-y-8 animate__animated animate__fadeIn">
-                    <form id="uForm" class="flex flex-col md:flex-row gap-4">
-                        <input type="text" id="uName" placeholder="Staff Name" class="flex-1 p-5 bg-slate-50 rounded-2xl font-bold border-none outline-none input-focus" required>
-                        <input type="password" id="uPass" placeholder="Secure Password" class="flex-1 p-5 bg-slate-50 rounded-2xl font-bold border-none outline-none input-focus" required>
-                        <button type="submit" class="bg-slate-900 text-white px-10 rounded-2xl font-black text-xs uppercase btn-power hover:bg-emerald-500">Create</button>
+                <div id="sec-users" class="space-y-4">
+                    <form id="uForm" class="flex flex-col gap-3">
+                        <input type="text" id="uName" placeholder="Username" class="p-4 bg-white rounded-2xl font-bold shadow-sm outline-none">
+                        <input type="password" id="uPass" placeholder="Password" class="p-4 bg-white rounded-2xl font-bold shadow-sm outline-none">
+                        <button type="submit" class="bg-slate-900 text-white py-4 rounded-2xl font-black text-xs">ADD ACCOUNT</button>
                     </form>
-                    <div id="list-users" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                    <div id="list-users" class="grid grid-cols-1 gap-3"></div>
                 </div>
 
-                <div id="sec-cars" class="hidden glass p-10 rounded-[48px] space-y-8 animate__animated animate__fadeIn">
-                    <div class="flex flex-col md:flex-row gap-4">
-                        <input type="text" id="vPlate" placeholder="Plate #" class="flex-1 p-5 bg-slate-50 rounded-2xl font-black uppercase outline-none input-focus">
-                        <input type="text" id="vTypeManual" placeholder="Model/Class" class="flex-1 p-5 bg-slate-50 rounded-2xl font-bold outline-none input-focus">
-                        <button onclick="addVehicle()" class="bg-emerald-500 text-white px-10 rounded-2xl font-black text-xs uppercase btn-power hover:bg-slate-900">Register</button>
+                <div id="sec-cars" class="hidden space-y-4">
+                    <div class="flex flex-col gap-3">
+                        <input type="text" id="vPlate" placeholder="Plate Number" class="p-4 bg-white rounded-2xl font-black uppercase">
+                        <input type="text" id="vTypeManual" placeholder="Model Class" class="p-4 bg-white rounded-2xl font-bold">
+                        <button onclick="addVehicle()" class="bg-emerald-500 text-white py-4 rounded-2xl font-black text-xs">ADD VEHICLE</button>
                     </div>
-                    <div id="list-cars" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                    <div id="list-cars" class="grid grid-cols-1 gap-3"></div>
                 </div>
 
-                <div id="sec-roads" class="hidden glass p-10 rounded-[48px] space-y-8 animate__animated animate__fadeIn">
-                    <div class="flex gap-4">
-                        <input type="text" id="rName" placeholder="New Route Segment" class="flex-1 p-5 bg-slate-50 rounded-2xl font-bold outline-none input-focus">
-                        <button onclick="addRoute()" class="bg-slate-900 text-white px-12 rounded-2xl font-black text-2xl btn-power hover:bg-emerald-500">+</button>
+                <div id="sec-roads" class="hidden space-y-4">
+                    <div class="flex gap-3">
+                        <input type="text" id="rName" placeholder="New Route" class="flex-1 p-4 bg-white rounded-2xl font-bold">
+                        <button onclick="addRoute()" class="bg-slate-900 text-white px-8 rounded-2xl font-black">+</button>
                     </div>
-                    <div id="list-roads" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+                    <div id="list-roads" class="grid grid-cols-1 gap-2"></div>
                 </div>
             </div>
         </main>
@@ -190,8 +165,16 @@
         function nav(v) {
             document.getElementById('view-dash').classList.toggle('hidden', v !== 'dash');
             document.getElementById('view-admin').classList.toggle('hidden', v !== 'admin');
-            document.getElementById('nav-dash').classList.toggle('active', v === 'dash');
-            document.getElementById('nav-admin').classList.toggle('active', v === 'admin');
+            
+            // Sync Desktop Nav
+            document.getElementById('desk-dash').classList.toggle('bg-slate-900', v === 'dash');
+            document.getElementById('desk-dash').classList.toggle('text-white', v === 'dash');
+            document.getElementById('desk-admin').classList.toggle('bg-slate-900', v === 'admin');
+            document.getElementById('desk-admin').classList.toggle('text-white', v === 'admin');
+
+            // Sync Mobile Nav
+            document.getElementById('mob-dash').classList.toggle('active', v === 'dash');
+            document.getElementById('mob-admin').classList.toggle('active', v === 'admin');
         }
 
         function tab(t) {
@@ -203,27 +186,24 @@
 
         document.getElementById('loginForm').onsubmit = (e) => {
             e.preventDefault();
-            const u = document.getElementById('uIn').value;
-            const p = document.getElementById('pIn').value;
-            const user = db.users.find(x => x.u === u && x.p === p);
+            const user = db.users.find(x => x.u === document.getElementById('uIn').value && x.p === document.getElementById('pIn').value);
             if(user) {
                 session = user;
                 if(user.role === 'admin') document.body.classList.add('is-admin');
-                document.getElementById('loginSection').classList.add('animate__animated', 'animate__fadeOutUp');
+                document.getElementById('loginSection').classList.add('animate__animated', 'animate__fadeOutDown');
                 setTimeout(() => {
                     document.getElementById('loginSection').classList.add('hidden');
                     document.getElementById('app').classList.replace('hidden', 'flex');
-                    document.getElementById('userTag').innerText = user.u;
+                    document.getElementById('userTagMob').innerText = "Logged in as: " + user.u;
                     initFilters(); refreshAll();
                 }, 500);
-            } else alert("Invalid Credentials");
+            } else alert("Denied");
         };
 
         function initFilters() {
             const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-            document.getElementById('fMonth').innerHTML = '<option value="all">Full Year</option>' + months.map((m, i) => `<option value="${i}">${m.toUpperCase()}</option>`).join('');
-            let ys = '<option value="all">All Years</option>';
-            for(let y=2026; y<=2030; y++) ys += `<option value="${y}">${y}</option>`;
+            document.getElementById('fMonth').innerHTML = '<option value="all">Yearly</option>' + months.map((m, i) => `<option value="${i}">${m.toUpperCase()}</option>`).join('');
+            let ys = ''; for(let y=2026; y<=2030; y++) ys += `<option value="${y}">${y}</option>`;
             document.getElementById('fYear').innerHTML = ys;
             document.getElementById('fMonth').value = new Date().getMonth();
             document.getElementById('fYear').value = new Date().getFullYear();
@@ -248,109 +228,86 @@
         document.getElementById('uForm').onsubmit = (e) => {
             e.preventDefault();
             db.users.push({ u: document.getElementById('uName').value, p: document.getElementById('uPass').value, role: 'operator' });
-            localStorage.setItem('cl21_users', JSON.stringify(db.users));
-            e.target.reset(); refreshAll();
+            localStorage.setItem('cl21_users', JSON.stringify(db.users)); e.target.reset(); refreshAll();
         };
 
-        function saveCfg() {
-            localStorage.setItem('cl21_cfg', JSON.stringify(db.config));
-            refreshAll();
-        }
+        function saveCfg() { localStorage.setItem('cl21_cfg', JSON.stringify(db.config)); refreshAll(); }
 
         window.syncType = () => {
-            const plate = document.getElementById('iPlate').value;
-            const match = db.config.vehicles.find(v => v.plate === plate);
+            const match = db.config.vehicles.find(v => v.plate === document.getElementById('iPlate').value);
             document.getElementById('iType').value = match ? match.type : '';
         };
 
         document.getElementById('oilForm').onsubmit = (e) => {
             e.preventDefault();
             const plate = document.getElementById('iPlate').value;
-            if(!plate) return alert("Select registered asset");
             const type = db.config.vehicles.find(v => v.plate === plate).type;
-            db.logs.unshift({ 
-                id: Date.now(), plate, type, 
-                route: document.getElementById('iRoute').value, 
-                amt: parseFloat(document.getElementById('iAmt').value), 
-                user: session.u, 
-                date: new Date(document.getElementById('iDate').value).toISOString() 
-            });
+            db.logs.unshift({ id: Date.now(), plate, type, route: document.getElementById('iRoute').value, amt: parseFloat(document.getElementById('iAmt').value), user: session.u, date: new Date(document.getElementById('iDate').value).toISOString() });
             localStorage.setItem('cl21_logs', JSON.stringify(db.logs));
-            document.getElementById('iAmt').value = '';
-            renderLogs();
+            document.getElementById('iAmt').value = ''; renderLogs();
         };
 
         function renderLogs() {
-            const selM = document.getElementById('fMonth').value;
-            const selY = document.getElementById('fYear').value;
-            let total = 0;
-
-            const filtered = db.logs.filter(l => {
-                const d = new Date(l.date);
-                const uMatch = (session.role === 'admin' || l.user === session.u);
-                const mMatch = (selM === 'all' || d.getMonth().toString() === selM);
-                const yMatch = (selY === 'all' || d.getFullYear().toString() === selY);
-                return uMatch && mMatch && yMatch;
-            });
-
-            document.getElementById('logTable').innerHTML = filtered.map((l, idx) => {
-                total += l.amt; const d = new Date(l.date);
-                return `<tr class="hover:bg-slate-50 transition-all animate__animated animate__fadeInUp" style="animation-delay: ${idx * 0.05}s">
-                    <td class="px-8 py-5 font-bold text-slate-400 text-xs">${d.toLocaleDateString()}</td>
-                    <td class="px-8 py-5 font-black uppercase text-slate-900">${l.plate}</td>
-                    <td class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-tighter">${l.type} <span class="ml-1 opacity-40 font-normal">@ ${l.route}</span></td>
-                    <td class="px-8 py-5 text-right font-black text-emerald-600 text-lg tracking-tighter">${l.amt.toFixed(2)}L</td>
-                    <td class="px-8 py-5 text-right admin-only"><button onclick="delLog(${l.id})" class="text-slate-200 hover:text-red-500 transition-colors p-2"><i class="fa-solid fa-trash-can"></i></button></td>
-                </tr>`;
-            }).join('') || '<tr><td colspan="5" class="p-24 text-center text-slate-200 font-bold uppercase tracking-[0.4em]">Standby...</td></tr>';
-            
-            document.getElementById('totalDisplay').innerText = total.toFixed(2);
-        }
-
-        window.delLog = (id) => { if(confirm("Erase entry?")){ db.logs = db.logs.filter(x => x.id !== id); localStorage.setItem('cl21_logs', JSON.stringify(db.logs)); renderLogs(); }};
-
-        window.exportData = () => {
             const m = document.getElementById('fMonth').value;
             const y = document.getElementById('fYear').value;
+            let total = 0;
             const filtered = db.logs.filter(l => {
                 const d = new Date(l.date);
-                const mMatch = (m === 'all' || d.getMonth().toString() === m);
-                const yMatch = (y === 'all' || d.getFullYear().toString() === y);
-                return mMatch && yMatch;
+                const uM = (session.role === 'admin' || l.user === session.u);
+                const mM = (m === 'all' || d.getMonth().toString() === m);
+                const yM = (y === 'all' || d.getFullYear().toString() === y);
+                return uM && mM && yM;
             });
 
-            let csv = "Date,Plate,Type,Route,User,Liters\n";
-            filtered.forEach(l => csv += `${new Date(l.date).toLocaleDateString()},${l.plate},${l.type},${l.route},${l.user},${l.amt}\n`);
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = `CL21_POWER_REPORT.csv`;
-            a.click();
-        };
+            // Mobile Cards Render
+            document.getElementById('mobileLogList').innerHTML = filtered.map(l => {
+                total += l.amt; const d = new Date(l.date);
+                return `
+                <div class="log-card flex justify-between items-center animate__animated animate__fadeInUp">
+                    <div>
+                        <p class="text-[9px] font-black text-slate-400 uppercase">${d.toLocaleDateString()}</p>
+                        <h4 class="font-black text-slate-900">${l.plate}</h4>
+                        <p class="text-[10px] font-bold text-emerald-500">${l.type} - ${l.route}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-xl font-black text-slate-900">${l.amt.toFixed(2)}L</p>
+                        <div class="admin-only">
+                            <button onclick="delLog(${l.id})" class="text-red-300 text-xs mt-1">Delete</button>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('') || '<p class="text-center p-10 text-slate-300 font-bold">No Records</p>';
+
+            // Desktop Table Render
+            document.getElementById('logTable').innerHTML = filtered.map(l => `
+                <tr class="hover:bg-slate-50">
+                    <td class="px-8 py-4 font-bold text-slate-400">${new Date(l.date).toLocaleDateString()}</td>
+                    <td class="px-8 py-4 font-black uppercase">${l.plate} <span class="text-[10px] text-slate-300 ml-2">${l.type}</span></td>
+                    <td class="px-8 py-4 text-right font-black text-emerald-600">${l.amt.toFixed(2)}L</td>
+                    <td class="px-8 py-4 text-right admin-only"><button onclick="delLog(${l.id})" class="text-slate-200 hover:text-red-500"><i class="fa-solid fa-trash-can"></i></button></td>
+                </tr>`).join('');
+            
+            document.getElementById('totalDisplay').innerText = total.toFixed(2) + " L";
+        }
+
+        window.delLog = (id) => { if(confirm("Delete?")){ db.logs = db.logs.filter(x => x.id !== id); localStorage.setItem('cl21_logs', JSON.stringify(db.logs)); renderLogs(); }};
 
         function refreshAll() {
             renderLogs();
-            document.getElementById('list-users').innerHTML = db.users.map((u, i) => `
-                <div class="flex justify-between items-center p-5 bg-white border rounded-[20px] font-bold text-[10px] uppercase tracking-widest hover:border-emerald-200 transition-all animate__animated animate__fadeIn">
-                    <span>${u.u} <span class="ml-2 text-[8px] bg-slate-900 text-white px-2 py-0.5 rounded">${u.role}</span></span>
-                    ${u.u !== 'admin' ? `<button onclick="db.users.splice(${i},1); localStorage.setItem('cl21_users', JSON.stringify(db.users)); refreshAll();" class="text-red-400 hover:text-red-600 transition-colors">REMOVE</button>` : ''}
-                </div>`).join('');
-
-            document.getElementById('list-cars').innerHTML = db.config.vehicles.map((v, i) => `
-                <div class="flex justify-between items-center p-5 bg-white border rounded-[20px] hover:border-emerald-200 transition-all animate__animated animate__fadeIn">
-                    <span class="font-black text-xs uppercase">${v.plate} <span class="text-emerald-500 ml-1 font-bold">(${v.type})</span></span>
-                    <button onclick="db.config.vehicles.splice(${i},1); saveCfg();" class="text-red-400 text-[10px] font-black">DELETE</button>
-                </div>`).join('');
-
-            document.getElementById('list-roads').innerHTML = db.config.routes.map((r, i) => `
-                <div class="flex justify-between items-center p-4 bg-white border rounded-2xl text-[10px] font-black uppercase animate__animated animate__fadeIn">
-                    ${r} <button onclick="db.config.routes.splice(${i},1); saveCfg();" class="text-red-300 hover:text-red-500 text-xl">×</button>
-                </div>`).join('');
-
-            document.getElementById('iPlate').innerHTML = '<option value="">Target Asset</option>' + db.config.vehicles.map(v => `<option value="${v.plate}">${v.plate}</option>`).join('');
+            document.getElementById('list-users').innerHTML = db.users.map((u, i) => `<div class="p-4 bg-white rounded-2xl flex justify-between items-center font-bold text-xs uppercase shadow-sm">${u.u} ${u.u !== 'admin' ? `<button onclick="db.users.splice(${i},1); refreshAll()" class="text-red-400">DEL</button>` : ''}</div>`).join('');
+            document.getElementById('list-cars').innerHTML = db.config.vehicles.map((v, i) => `<div class="p-4 bg-white rounded-2xl flex justify-between items-center font-black text-xs uppercase shadow-sm">${v.plate} <button onclick="db.config.vehicles.splice(${i},1); saveCfg()" class="text-red-400">REMOVE</button></div>`).join('');
+            document.getElementById('list-roads').innerHTML = db.config.routes.map((r, i) => `<div class="p-3 bg-white rounded-xl flex justify-between items-center text-[10px] font-black uppercase shadow-sm">${r} <button onclick="db.config.routes.splice(${i},1); saveCfg()" class="text-red-400">×</button></div>`).join('');
+            document.getElementById('iPlate').innerHTML = '<option value="">Vehicle</option>' + db.config.vehicles.map(v => `<option value="${v.plate}">${v.plate}</option>`).join('');
             document.getElementById('iRoute').innerHTML = db.config.routes.map(r => `<option>${r}</option>`).join('');
             syncType();
         }
+
+        window.exportData = () => {
+            let csv = "Date,Plate,Type,Route,Amount\n";
+            db.logs.forEach(l => csv += `${new Date(l.date).toLocaleDateString()},${l.plate},${l.type},${l.route},${l.amt}\n`);
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'Report.csv'; a.click();
+        };
     </script>
 </body>
 </html>
