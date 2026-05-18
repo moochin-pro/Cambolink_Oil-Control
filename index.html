@@ -23,7 +23,7 @@
 
     <div id="loginSection" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900 p-6">
         <div class="bg-white p-8 rounded-2xl w-full max-w-sm shadow-xl">
-            <h1 class="text-2xl font-bold mb-2 text-slate-900">Cambolink21_Express</h1>
+            <h1 class="text-2xl font-bold mb-2 text-slate-900">CL21 Login</h1>
             <p class="text-xs text-slate-400 mb-6 font-semibold uppercase tracking-wider">Oil Control System</p>
             <form id="loginForm" class="space-y-4">
                 <input type="text" id="uIn" placeholder="Username" class="w-full p-3 rounded-lg outline-none bg-slate-50 font-medium" required>
@@ -35,7 +35,7 @@
 
     <div id="app" class="hidden flex flex-col lg:flex-row min-h-screen">
         <aside class="hidden lg:flex w-64 bg-white border-r flex-col p-6 sticky top-0 h-screen">
-            <div class="font-bold text-xl mb-10 tracking-tight text-emerald-600">ប្រព័ន្ធគ្រប់គ្រងប្រេង_CAMBOLINK21</div>
+            <div class="font-bold text-xl mb-10 tracking-tight text-emerald-600">CL21_OIL</div>
             <nav class="flex-1 space-y-1">
                 <button onclick="nav('dash')" id="d-dash" class="w-full text-left px-4 py-3 rounded-lg font-bold text-sm bg-emerald-50 text-emerald-700">Dashboard</button>
                 <button onclick="nav('admin')" id="d-admin" class="admin-only w-full text-left px-4 py-3 rounded-lg font-bold text-sm text-slate-500 hover:bg-slate-50">Admin Panel</button>
@@ -91,6 +91,7 @@
                                 <th class="px-6 py-4">Date</th>
                                 <th class="px-6 py-4">Plate #</th>
                                 <th class="px-6 py-4">Details</th>
+                                <th class="px-6 py-4 admin-only">Staff</th>
                                 <th class="px-6 py-4 text-right">Liters</th>
                                 <th class="px-6 py-4 text-right admin-only">Action</th>
                             </tr>
@@ -216,6 +217,7 @@
             const y = document.getElementById('fYear').value;
             const s = document.getElementById('fSearch').value.toUpperCase();
             let total = 0;
+            
             filteredResults = db.logs.filter(l => {
                 const d = new Date(l.date);
                 const userMatch = (session.role === 'admin' || l.user === session.u);
@@ -224,16 +226,18 @@
                 const searchMatch = l.plate.includes(s);
                 return userMatch && monthMatch && yearMatch && searchMatch;
             });
+
             document.getElementById('logTable').innerHTML = filteredResults.map(l => {
                 total += l.amt;
                 return `<tr>
                     <td class="px-6 py-4 text-xs font-medium text-slate-400">${new Date(l.date).toLocaleDateString()}</td>
                     <td class="px-6 py-4 font-bold text-slate-900">${l.plate}</td>
                     <td class="px-6 py-4 text-xs font-semibold">${l.type} <span class="text-slate-300 mx-1">/</span> ${l.route}</td>
+                    <td class="px-6 py-4 admin-only text-[10px] font-black uppercase text-slate-400">${l.user}</td>
                     <td class="px-6 py-4 text-right font-bold text-emerald-600">${l.amt.toFixed(2)}L</td>
                     <td class="px-6 py-4 text-right admin-only"><button onclick="delLog('${l.id}')" class="text-red-300 hover:text-red-600 px-2">Delete</button></td>
                 </tr>`;
-            }).join('') || '<tr><td colspan="5" class="py-10 text-center text-slate-300">No records found</td></tr>';
+            }).join('') || '<tr><td colspan="6" class="py-10 text-center text-slate-300">No records found</td></tr>';
             document.getElementById('totalDisplay').innerText = total.toFixed(2) + " L";
         }
 
@@ -257,7 +261,6 @@
             syncType();
         }
 
-        // CREATE USER FIX
         document.getElementById('uForm').onsubmit = async (e) => {
             e.preventDefault();
             const u = document.getElementById('uName').value.trim();
