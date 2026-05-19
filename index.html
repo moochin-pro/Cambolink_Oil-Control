@@ -217,9 +217,9 @@ Here is the updated code with those features added while keeping your original U
         };
 
         function init() {
-            const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-            document.getElementById('fMonth').innerHTML = '<option value="all">Any Month</option>' + months.map((m, i) => `<option value="${i}">${m.toUpperCase()}</option>`).join('');
-            let ys = '<option value="all">Any Year</option>'; for(let y=2026; y<=2050; y++) ys += `<option value="${y}">${y}</option>`;
+            //const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            //document.getElementById('fMonth').innerHTML = '<option value="all">Any Month</option>' + months.map((m, i) => `<option value="${i}">${m.toUpperCase()}</option>`).join('');
+            //let ys = '<option value="all">Any Year</option>'; for(let y=2026; y<=2050; y++) ys += `<option value="${y}">${y}</option>`;
             document.getElementById('fYear').innerHTML = ys;
             document.getElementById('fMonth').value = new Date().getMonth();
             document.getElementById('fYear').value = new Date().getFullYear();
