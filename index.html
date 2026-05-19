@@ -1,3 +1,8 @@
+I have updated the code to include the **Date Range** filter (From Date to To Date) and improved the **Plate Number** search for inputting data by making the datalist filterable.
+
+Here is the updated code with those features added while keeping your original UI and logic intact:
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -60,6 +65,16 @@
                         <div class="flex-1 space-y-2">
                             <p class="text-[10px] font-bold text-slate-400 uppercase">Filter & Search</p>
                             <div class="flex gap-2">
+                                <div class="flex-1">
+                                    <label class="text-[8px] font-bold text-slate-400 uppercase">From</label>
+                                    <input type="date" id="fStart" onchange="renderLogs()" class="w-full p-1 rounded border text-[10px] font-bold bg-slate-50">
+                                </div>
+                                <div class="flex-1">
+                                    <label class="text-[8px] font-bold text-slate-400 uppercase">To</label>
+                                    <input type="date" id="fEnd" onchange="renderLogs()" class="w-full p-1 rounded border text-[10px] font-bold bg-slate-50">
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
                                 <select id="fMonth" onchange="renderLogs()" class="flex-1 p-2 rounded border text-[10px] font-bold bg-slate-50 outline-none"></select>
                                 <select id="fYear" onchange="renderLogs()" class="flex-1 p-2 rounded border text-[10px] font-bold bg-slate-50 outline-none"></select>
                             </div>
@@ -74,7 +89,7 @@
                     <form id="oilForm" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                         <input type="date" id="iDate" required class="p-3 bg-slate-50 rounded border text-sm font-medium outline-none">
                         <div class="relative">
-                            <input list="plateOptions" id="iPlate" onchange="syncType()" placeholder="Type Plate #" required class="w-full p-3 bg-slate-50 rounded border text-sm font-bold uppercase outline-none">
+                            <input list="plateOptions" id="iPlate" oninput="syncType()" placeholder="Type Plate #" required class="w-full p-3 bg-slate-50 rounded border text-sm font-bold uppercase outline-none">
                             <datalist id="plateOptions"></datalist>
                         </div>
                         <input type="text" id="iType" readonly class="p-3 bg-slate-100 rounded border text-sm font-medium text-slate-400" placeholder="Model Class">
@@ -216,15 +231,33 @@
             const m = document.getElementById('fMonth').value;
             const y = document.getElementById('fYear').value;
             const s = document.getElementById('fSearch').value.toUpperCase();
+            const start = document.getElementById('fStart').value;
+            const end = document.getElementById('fEnd').value;
             let total = 0;
             
             filteredResults = db.logs.filter(l => {
                 const d = new Date(l.date);
+                d.setHours(0,0,0,0);
+                
                 const userMatch = (session.role === 'admin' || l.user === session.u);
                 const monthMatch = (m === 'all' || d.getMonth().toString() === m);
                 const yearMatch = (y === 'all' || d.getFullYear().toString() === y);
                 const searchMatch = l.plate.includes(s);
-                return userMatch && monthMatch && yearMatch && searchMatch;
+                
+                // DATE RANGE LOGIC
+                let rangeMatch = true;
+                if (start) {
+                    const sDate = new Date(start);
+                    sDate.setHours(0,0,0,0);
+                    if (d < sDate) rangeMatch = false;
+                }
+                if (end) {
+                    const eDate = new Date(end);
+                    eDate.setHours(0,0,0,0);
+                    if (d > eDate) rangeMatch = false;
+                }
+
+                return userMatch && monthMatch && yearMatch && searchMatch && rangeMatch;
             });
 
             document.getElementById('logTable').innerHTML = filteredResults.map(l => {
@@ -302,3 +335,5 @@
     </script>
 </body>
 </html>
+
+```
