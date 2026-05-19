@@ -1,8 +1,3 @@
-I have updated the code to include the **Date Range** filter (From Date to To Date) and improved the **Plate Number** search for inputting data by making the datalist filterable.
-
-Here is the updated code with those features added while keeping your original UI and logic intact:
-
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,6 +17,11 @@ Here is the updated code with those features added while keeping your original U
         .m-nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: #94a3b8; border: none; background: transparent; }
         .m-nav-btn.active { color: #059669; }
         input, select { border: 1px solid #e2e8f0 !important; }
+        
+        /* Professional Plate Autocomplete */
+        .plate-results { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 8px 8px; z-index: 100; max-height: 200px; overflow-y: auto; shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
+        .plate-item { padding: 10px 12px; cursor: pointer; font-size: 13px; font-weight: 700; border-bottom: 1px solid #f8fafc; }
+        .plate-item:hover { background: #f1f5f9; color: #059669; }
     </style>
 </head>
 <body class="pb-20 lg:pb-0">
@@ -63,35 +63,33 @@ Here is the updated code with those features added while keeping your original U
                     </div>
                     <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex items-center gap-3">
                         <div class="flex-1 space-y-2">
-                            <p class="text-[10px] font-bold text-slate-400 uppercase">Filter & Search</p>
+                            <p class="text-[10px] font-bold text-slate-400 uppercase">Filter Records</p>
                             <div class="flex gap-2">
                                 <div class="flex-1">
-                                    <label class="text-[8px] font-bold text-slate-400 uppercase">From</label>
-                                    <input type="date" id="fStart" onchange="renderLogs()" class="w-full p-1 rounded border text-[10px] font-bold bg-slate-50">
+                                    <label class="text-[8px] font-bold text-slate-400 uppercase">From Date</label>
+                                    <input type="date" id="fStart" onchange="renderLogs()" class="w-full p-2 rounded border text-xs font-bold bg-slate-50">
                                 </div>
                                 <div class="flex-1">
-                                    <label class="text-[8px] font-bold text-slate-400 uppercase">To</label>
-                                    <input type="date" id="fEnd" onchange="renderLogs()" class="w-full p-1 rounded border text-[10px] font-bold bg-slate-50">
+                                    <label class="text-[8px] font-bold text-slate-400 uppercase">To Date</label>
+                                    <input type="date" id="fEnd" onchange="renderLogs()" class="w-full p-2 rounded border text-xs font-bold bg-slate-50">
                                 </div>
                             </div>
-                            <div class="flex gap-2">
-                                <select id="fMonth" onchange="renderLogs()" class="flex-1 p-2 rounded border text-[10px] font-bold bg-slate-50 outline-none"></select>
-                                <select id="fYear" onchange="renderLogs()" class="flex-1 p-2 rounded border text-[10px] font-bold bg-slate-50 outline-none"></select>
-                            </div>
-                            <input type="text" id="fSearch" oninput="renderLogs()" placeholder="Search Plate Number..." class="w-full p-2 rounded border text-xs font-bold uppercase outline-none bg-white">
+                            <input type="text" id="fSearch" oninput="renderLogs()" placeholder="Quick Search Plate..." class="w-full p-2 rounded border text-xs font-bold uppercase outline-none bg-white">
                         </div>
-                        <button onclick="exportData()" class="bg-slate-900 text-white px-4 py-5 rounded-lg text-xs font-bold uppercase"><i class="fa-solid fa-download"></i></button>
+                        <button onclick="exportData()" class="bg-slate-900 text-white px-4 py-6 rounded-lg text-xs font-bold uppercase"><i class="fa-solid fa-download"></i></button>
                     </div>
                 </div>
 
                 <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
                     <h3 class="text-xs font-bold uppercase text-slate-400 mb-4">Add Fuel Record</h3>
-                    <form id="oilForm" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                    <form id="oilForm" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 relative">
                         <input type="date" id="iDate" required class="p-3 bg-slate-50 rounded border text-sm font-medium outline-none">
-                        <div class="relative">
-                            <input list="plateOptions" id="iPlate" oninput="syncType()" placeholder="Type Plate #" required class="w-full p-3 bg-slate-50 rounded border text-sm font-bold uppercase outline-none">
-                            <datalist id="plateOptions"></datalist>
+                        
+                        <div class="relative group">
+                            <input type="text" id="iPlate" autocomplete="off" oninput="searchPlate(this.value)" placeholder="Search Plate #" required class="w-full p-3 bg-slate-50 rounded border text-sm font-bold uppercase outline-none focus:border-emerald-500">
+                            <div id="plateDropdown" class="plate-results hidden"></div>
                         </div>
+
                         <input type="text" id="iType" readonly class="p-3 bg-slate-100 rounded border text-sm font-medium text-slate-400" placeholder="Model Class">
                         <select id="iRoute" required class="p-3 bg-slate-50 rounded border text-sm font-medium outline-none"></select>
                         <input type="number" id="iAmt" step="0.01" required placeholder="Liters (L)" class="p-3 bg-emerald-50 rounded border border-emerald-100 text-sm font-bold text-emerald-700">
@@ -217,19 +215,40 @@ Here is the updated code with those features added while keeping your original U
         };
 
         function init() {
-            //const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-            //document.getElementById('fMonth').innerHTML = '<option value="all">Any Month</option>' + months.map((m, i) => `<option value="${i}">${m.toUpperCase()}</option>`).join('');
-            //let ys = '<option value="all">Any Year</option>'; for(let y=2026; y<=2050; y++) ys += `<option value="${y}">${y}</option>`;
-            document.getElementById('fYear').innerHTML = ys;
-            document.getElementById('fMonth').value = new Date().getMonth();
-            document.getElementById('fYear').value = new Date().getFullYear();
             document.getElementById('iDate').valueAsDate = new Date();
             refresh();
         }
 
+        // NEW PROFESSIONAL PLATE SEARCH LOGIC
+        window.searchPlate = (val) => {
+            const dropdown = document.getElementById('plateDropdown');
+            if(!val) { dropdown.classList.add('hidden'); return; }
+            
+            const results = db.config.vehicles.filter(v => v.plate.includes(val.toUpperCase()));
+            if(results.length > 0) {
+                dropdown.innerHTML = results.map(v => `
+                    <div class="plate-item" onclick="selectPlate('${v.plate}', '${v.type}')">
+                        ${v.plate} <span class="text-slate-400 font-medium ml-2">(${v.type})</span>
+                    </div>
+                `).join('');
+                dropdown.classList.remove('hidden');
+            } else {
+                dropdown.classList.add('hidden');
+            }
+        }
+
+        window.selectPlate = (plate, type) => {
+            document.getElementById('iPlate').value = plate;
+            document.getElementById('iType').value = type;
+            document.getElementById('plateDropdown').classList.add('hidden');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if(!e.target.closest('.group')) document.getElementById('plateDropdown').classList.add('hidden');
+        });
+
         window.renderLogs = () => {
-            const m = document.getElementById('fMonth').value;
-            const y = document.getElementById('fYear').value;
             const s = document.getElementById('fSearch').value.toUpperCase();
             const start = document.getElementById('fStart').value;
             const end = document.getElementById('fEnd').value;
@@ -240,11 +259,8 @@ Here is the updated code with those features added while keeping your original U
                 d.setHours(0,0,0,0);
                 
                 const userMatch = (session.role === 'admin' || l.user === session.u);
-                const monthMatch = (m === 'all' || d.getMonth().toString() === m);
-                const yearMatch = (y === 'all' || d.getFullYear().toString() === y);
                 const searchMatch = l.plate.includes(s);
                 
-                // DATE RANGE LOGIC
                 let rangeMatch = true;
                 if (start) {
                     const sDate = new Date(start);
@@ -257,7 +273,7 @@ Here is the updated code with those features added while keeping your original U
                     if (d > eDate) rangeMatch = false;
                 }
 
-                return userMatch && monthMatch && yearMatch && searchMatch && rangeMatch;
+                return userMatch && searchMatch && rangeMatch;
             });
 
             document.getElementById('logTable').innerHTML = filteredResults.map(l => {
@@ -289,9 +305,7 @@ Here is the updated code with those features added while keeping your original U
             document.getElementById('list-users').innerHTML = db.users.map((u) => `<div class="p-3 bg-white border rounded flex justify-between items-center text-xs font-bold uppercase shadow-sm">${u.u} ${u.u !== 'admin' ? `<button onclick="delUser('${u.id}')" class="text-red-400">DEL</button>` : ''}</div>`).join('');
             document.getElementById('list-cars').innerHTML = db.config.vehicles.filter(v => v.plate.includes(vS)).map((v, i) => `<div class="p-3 bg-white border rounded flex justify-between items-center text-xs font-bold uppercase shadow-sm">${v.plate} <span class="text-slate-300">(${v.type})</span> <button onclick="delV('${v.plate}')" class="text-red-400">DEL</button></div>`).join('');
             document.getElementById('list-roads').innerHTML = db.config.routes.filter(r => r.toUpperCase().includes(rS)).map((r, i) => `<div class="p-2 bg-white border rounded flex justify-between items-center text-[10px] font-bold shadow-sm">${r} <button onclick="delR('${r}')" class="text-red-400">×</button></div>`).join('');
-            document.getElementById('plateOptions').innerHTML = db.config.vehicles.map(v => `<option value="${v.plate}">`).join('');
             document.getElementById('iRoute').innerHTML = db.config.routes.map(r => `<option>${r}</option>`).join('');
-            syncType();
         }
 
         document.getElementById('uForm').onsubmit = async (e) => {
@@ -321,19 +335,12 @@ Here is the updated code with those features added while keeping your original U
             const v = db.config.vehicles.find(v => v.plate === plate);
             if(!v) return alert("Vehicle Plate Not Found!");
             await addDoc(collection(firestore, "oil_logs"), { plate, type: v.type, route: document.getElementById('iRoute').value, amt: parseFloat(document.getElementById('iAmt').value), user: session.u, date: new Date(document.getElementById('iDate').value).toISOString() });
-            document.getElementById('iAmt').value = ''; document.getElementById('iPlate').value = '';
+            document.getElementById('iAmt').value = ''; document.getElementById('iPlate').value = ''; document.getElementById('iType').value = '';
         };
 
         window.delLog = async (id) => { if(confirm("Confirm delete?")){ await deleteDoc(doc(firestore, "oil_logs", id)); }};
-        window.syncType = () => { 
-            const plate = document.getElementById('iPlate').value.toUpperCase();
-            const v = db.config.vehicles.find(x => x.plate === plate); 
-            document.getElementById('iType').value = v ? v.type : ''; 
-        };
         window.addRoute = async () => { const r = document.getElementById('rName').value.trim(); if(!r) return; db.config.routes.push(r); await setDoc(doc(firestore, "settings", "config"), db.config); document.getElementById('rName').value = ''; };
         window.delUser = async (id) => { if(confirm("Delete this user?")) await deleteDoc(doc(firestore, "users", id)); };
     </script>
 </body>
 </html>
-
-```
