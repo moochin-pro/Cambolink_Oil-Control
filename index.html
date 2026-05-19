@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,8 +9,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-        /* Changed overflow-x to hidden to prevent side-scrolling, allowed overflow-y */
-        body { font-family: 'Inter', sans-serif; background: #f1f5f9; color: #1e293b; overflow-x: hidden; min-height: 100vh; }
+        body { font-family: 'Inter', sans-serif; background: #f1f5f9; color: #1e293b; overflow-x: hidden; }
         .admin-only { display: none !important; }
         body.is-admin .admin-only { display: block !important; }
         tr { border-bottom: 1px solid #e2e8f0; }
@@ -19,9 +19,17 @@
         .m-nav-btn.active { color: #059669; }
         input, select { border: 1px solid #e2e8f0 !important; }
         
-        .plate-results { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 8px 8px; z-index: 100; max-height: 200px; overflow-y: auto; shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
+        .plate-results { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 8px 8px; z-index: 100; max-height: 200px; overflow-y: auto; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
         .plate-item { padding: 10px 12px; cursor: pointer; font-size: 13px; font-weight: 700; border-bottom: 1px solid #f8fafc; }
         .plate-item:hover { background: #f1f5f9; color: #059669; }
+
+        /* Fixed Table Scroll Logic */
+        .table-container { height: calc(100vh - 480px); min-height: 300px; overflow-y: auto; position: relative; border-radius: 0 0 12px 12px; }
+        thead th { position: sticky; top: 0; background: #f8fafc; z-index: 10; box-shadow: 0 1px 0 #e2e8f0; }
+        
+        @media (max-width: 1024px) {
+            .table-container { height: calc(100vh - 540px); }
+        }
     </style>
 </head>
 <body class="pb-20 lg:pb-0">
@@ -38,8 +46,8 @@
         </div>
     </div>
 
-    <div id="app" class="hidden flex flex-col lg:flex-row">
-        <aside class="hidden lg:flex w-64 bg-white border-r flex-col p-6 sticky top-0 h-screen overflow-y-auto">
+    <div id="app" class="hidden flex flex-col lg:flex-row h-screen overflow-hidden">
+        <aside class="hidden lg:flex w-64 bg-white border-r flex-col p-6 h-full">
             <div class="font-bold text-xl mb-10 tracking-tight text-emerald-600">CL21_OIL</div>
             <nav class="flex-1 space-y-1">
                 <button onclick="nav('dash')" id="d-dash" class="w-full text-left px-4 py-3 rounded-lg font-bold text-sm bg-emerald-50 text-emerald-700">Dashboard</button>
@@ -54,68 +62,67 @@
             <button onclick="location.reload()" class="m-nav-btn"><i class="fa-solid fa-right-from-bracket mb-1 text-lg"></i>Exit</button>
         </nav>
 
-        <main class="flex-1 p-4 lg:p-10 min-w-0">
-            <div id="view-dash" class="max-w-5xl mx-auto space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+        <main class="flex-1 p-4 lg:p-6 overflow-hidden flex flex-col">
+            <div id="view-dash" class="max-w-6xl mx-auto w-full flex flex-col h-full space-y-4">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 shrink-0">
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
                         <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Calculated Total (Liters)</p>
                         <h2 class="text-4xl font-extrabold text-slate-900" id="totalDisplay">0.00</h2>
                     </div>
-                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex items-center gap-3">
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center gap-3">
                         <div class="flex-1 space-y-2">
-                            <p class="text-[10px] font-bold text-slate-400 uppercase">Filter Records</p>
                             <div class="flex gap-2">
                                 <div class="flex-1">
-                                    <label class="text-[8px] font-bold text-slate-400 uppercase">From Date</label>
+                                    <label class="text-[8px] font-bold text-slate-400 uppercase">From</label>
                                     <input type="date" id="fStart" onchange="renderLogs()" class="w-full p-2 rounded border text-xs font-bold bg-slate-50">
                                 </div>
                                 <div class="flex-1">
-                                    <label class="text-[8px] font-bold text-slate-400 uppercase">To Date</label>
+                                    <label class="text-[8px] font-bold text-slate-400 uppercase">To</label>
                                     <input type="date" id="fEnd" onchange="renderLogs()" class="w-full p-2 rounded border text-xs font-bold bg-slate-50">
                                 </div>
                             </div>
                             <input type="text" id="fSearch" oninput="renderLogs()" placeholder="Quick Search Plate..." class="w-full p-2 rounded border text-xs font-bold uppercase outline-none bg-white">
                         </div>
-                        <button onclick="exportData()" class="bg-slate-900 text-white px-4 py-6 rounded-lg text-xs font-bold uppercase"><i class="fa-solid fa-download"></i></button>
+                        <button onclick="exportData()" class="bg-slate-900 text-white px-4 py-5 rounded-lg text-xs font-bold uppercase"><i class="fa-solid fa-download"></i></button>
                     </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                    <h3 class="text-xs font-bold uppercase text-slate-400 mb-4">Add Fuel Record</h3>
-                    <form id="oilForm" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 relative">
-                        <input type="date" id="iDate" required class="p-3 bg-slate-50 rounded border text-sm font-medium outline-none">
-                        
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm shrink-0">
+                    <form id="oilForm" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3 relative">
+                        <input type="date" id="iDate" required class="p-2.5 bg-slate-50 rounded border text-sm font-medium outline-none">
                         <div class="relative group">
-                            <input type="text" id="iPlate" autocomplete="off" oninput="searchPlate(this.value)" placeholder="Search Plate #" required class="w-full p-3 bg-slate-50 rounded border text-sm font-bold uppercase outline-none focus:border-emerald-500">
+                            <input type="text" id="iPlate" autocomplete="off" oninput="searchPlate(this.value)" placeholder="Search Plate #" required class="w-full p-2.5 bg-slate-50 rounded border text-sm font-bold uppercase outline-none focus:border-emerald-500">
                             <div id="plateDropdown" class="plate-results hidden"></div>
                         </div>
-
-                        <input type="text" id="iType" readonly class="p-3 bg-slate-100 rounded border text-sm font-medium text-slate-400" placeholder="Model Class">
-                        <select id="iRoute" required class="p-3 bg-slate-50 rounded border text-sm font-medium outline-none"></select>
-                        <input type="number" id="iAmt" step="0.01" required placeholder="Liters (L)" class="p-3 bg-emerald-50 rounded border border-emerald-100 text-sm font-bold text-emerald-700">
-                        <button type="submit" class="lg:col-span-5 bg-emerald-600 text-white py-3 rounded-lg font-bold text-sm uppercase">Save Entry</button>
+                        <input type="text" id="iType" readonly class="p-2.5 bg-slate-100 rounded border text-sm font-medium text-slate-400" placeholder="Model Class">
+                        <select id="iRoute" required class="p-2.5 bg-slate-50 rounded border text-sm font-medium outline-none"></select>
+                        <input type="number" id="iAmt" step="0.01" required placeholder="Liters (L)" class="p-2.5 bg-emerald-50 rounded border border-emerald-100 text-sm font-bold text-emerald-700">
+                        <button type="submit" class="lg:col-span-5 bg-emerald-600 text-white py-2.5 rounded-lg font-bold text-sm uppercase">Save Entry</button>
                     </form>
                 </div>
 
-                <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-x-auto">
-                    <table class="w-full text-left text-sm min-w-[600px]">
-                        <thead class="bg-slate-50 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
-                            <tr>
-                                <th class="px-6 py-4">Date</th>
-                                <th class="px-6 py-4">Plate #</th>
-                                <th class="px-6 py-4">Details</th>
-                                <th class="px-6 py-4 admin-only">Staff</th>
-                                <th class="px-6 py-4 text-right">Liters</th>
-                                <th class="px-6 py-4 text-right admin-only">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="logTable" class="text-slate-600"></tbody>
-                    </table>
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm flex-1 flex flex-col overflow-hidden">
+                    <div class="table-container">
+                        <table class="w-full text-left text-sm">
+                            <thead class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                                <tr>
+                                    <th class="px-6 py-4">Date</th>
+                                    <th class="px-6 py-4">Plate #</th>
+                                    <th class="px-6 py-4">Details</th>
+                                    <th class="px-6 py-4 admin-only">Staff</th>
+                                    <th class="px-6 py-4 text-right">Liters</th>
+                                    <th class="px-6 py-4 text-right admin-only">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="logTable" class="text-slate-600"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
-            <div id="view-admin" class="hidden max-w-4xl mx-auto space-y-6">
-                <div class="flex gap-2 border-b">
+            <div id="view-admin" class="hidden max-w-4xl mx-auto w-full overflow-y-auto h-full space-y-6 pb-20">
+                <div class="flex gap-2 border-b sticky top-0 bg-[#f1f5f9] z-20 py-4">
                     <button onclick="tab('users')" id="t-users" class="px-4 py-2 font-bold text-sm border-b-2 border-emerald-600 text-emerald-600">Users</button>
                     <button onclick="tab('cars')" id="t-cars" class="px-4 py-2 font-bold text-sm text-slate-400">Vehicles</button>
                     <button onclick="tab('roads')" id="t-roads" class="px-4 py-2 font-bold text-sm text-slate-400">Routes</button>
@@ -193,8 +200,6 @@
             document.getElementById('d-admin').className = (v==='admin') ? "admin-only w-full text-left px-4 py-3 rounded-lg font-bold text-sm bg-emerald-50 text-emerald-700" : "admin-only w-full text-left px-4 py-3 rounded-lg font-bold text-sm text-slate-500 hover:bg-slate-50";
             document.getElementById('m-dash').classList.toggle('active', v === 'dash');
             document.getElementById('m-admin').classList.toggle('active', v === 'admin');
-            // Scroll back to top when navigating
-            window.scrollTo(0,0);
         }
 
         window.tab = (t) => {
@@ -224,7 +229,6 @@
         window.searchPlate = (val) => {
             const dropdown = document.getElementById('plateDropdown');
             if(!val) { dropdown.classList.add('hidden'); return; }
-            
             const results = db.config.vehicles.filter(v => v.plate.includes(val.toUpperCase()));
             if(results.length > 0) {
                 dropdown.innerHTML = results.map(v => `
@@ -233,9 +237,7 @@
                     </div>
                 `).join('');
                 dropdown.classList.remove('hidden');
-            } else {
-                dropdown.classList.add('hidden');
-            }
+            } else dropdown.classList.add('hidden');
         }
 
         window.selectPlate = (plate, type) => {
@@ -257,22 +259,11 @@
             filteredResults = db.logs.filter(l => {
                 const d = new Date(l.date);
                 d.setHours(0,0,0,0);
-                
                 const userMatch = (session.role === 'admin' || l.user === session.u);
                 const searchMatch = l.plate.includes(s);
-                
                 let rangeMatch = true;
-                if (start) {
-                    const sDate = new Date(start);
-                    sDate.setHours(0,0,0,0);
-                    if (d < sDate) rangeMatch = false;
-                }
-                if (end) {
-                    const eDate = new Date(end);
-                    eDate.setHours(0,0,0,0);
-                    if (d > eDate) rangeMatch = false;
-                }
-
+                if (start) { const sDate = new Date(start); sDate.setHours(0,0,0,0); if (d < sDate) rangeMatch = false; }
+                if (end) { const eDate = new Date(end); eDate.setHours(0,0,0,0); if (d > eDate) rangeMatch = false; }
                 return userMatch && searchMatch && rangeMatch;
             });
 
@@ -344,3 +335,5 @@
     </script>
 </body>
 </html>
+
+```
