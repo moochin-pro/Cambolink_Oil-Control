@@ -8,7 +8,8 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-        body { font-family: 'Inter', sans-serif; background: #f1f5f9; color: #1e293b; }
+        /* Changed overflow-x to hidden to prevent side-scrolling, allowed overflow-y */
+        body { font-family: 'Inter', sans-serif; background: #f1f5f9; color: #1e293b; overflow-x: hidden; min-height: 100vh; }
         .admin-only { display: none !important; }
         body.is-admin .admin-only { display: block !important; }
         tr { border-bottom: 1px solid #e2e8f0; }
@@ -18,7 +19,6 @@
         .m-nav-btn.active { color: #059669; }
         input, select { border: 1px solid #e2e8f0 !important; }
         
-        /* Professional Plate Autocomplete */
         .plate-results { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 8px 8px; z-index: 100; max-height: 200px; overflow-y: auto; shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
         .plate-item { padding: 10px 12px; cursor: pointer; font-size: 13px; font-weight: 700; border-bottom: 1px solid #f8fafc; }
         .plate-item:hover { background: #f1f5f9; color: #059669; }
@@ -38,14 +38,14 @@
         </div>
     </div>
 
-    <div id="app" class="hidden flex flex-col lg:flex-row min-h-screen">
-        <aside class="hidden lg:flex w-64 bg-white border-r flex-col p-6 sticky top-0 h-screen">
+    <div id="app" class="hidden flex flex-col lg:flex-row">
+        <aside class="hidden lg:flex w-64 bg-white border-r flex-col p-6 sticky top-0 h-screen overflow-y-auto">
             <div class="font-bold text-xl mb-10 tracking-tight text-emerald-600">CL21_OIL</div>
             <nav class="flex-1 space-y-1">
                 <button onclick="nav('dash')" id="d-dash" class="w-full text-left px-4 py-3 rounded-lg font-bold text-sm bg-emerald-50 text-emerald-700">Dashboard</button>
                 <button onclick="nav('admin')" id="d-admin" class="admin-only w-full text-left px-4 py-3 rounded-lg font-bold text-sm text-slate-500 hover:bg-slate-50">Admin Panel</button>
             </nav>
-            <button onclick="location.reload()" class="text-red-500 text-xs font-bold text-left px-4 py-3">Logout</button>
+            <button onclick="location.reload()" class="text-red-500 text-xs font-bold text-left px-4 py-3 mt-auto">Logout</button>
         </aside>
 
         <nav class="lg:hidden m-nav">
@@ -54,7 +54,7 @@
             <button onclick="location.reload()" class="m-nav-btn"><i class="fa-solid fa-right-from-bracket mb-1 text-lg"></i>Exit</button>
         </nav>
 
-        <main class="flex-1 p-4 lg:p-10">
+        <main class="flex-1 p-4 lg:p-10 min-w-0">
             <div id="view-dash" class="max-w-5xl mx-auto space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
@@ -97,8 +97,8 @@
                     </form>
                 </div>
 
-                <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-                    <table class="w-full text-left text-sm">
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-x-auto">
+                    <table class="w-full text-left text-sm min-w-[600px]">
                         <thead class="bg-slate-50 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
                             <tr>
                                 <th class="px-6 py-4">Date</th>
@@ -193,6 +193,8 @@
             document.getElementById('d-admin').className = (v==='admin') ? "admin-only w-full text-left px-4 py-3 rounded-lg font-bold text-sm bg-emerald-50 text-emerald-700" : "admin-only w-full text-left px-4 py-3 rounded-lg font-bold text-sm text-slate-500 hover:bg-slate-50";
             document.getElementById('m-dash').classList.toggle('active', v === 'dash');
             document.getElementById('m-admin').classList.toggle('active', v === 'admin');
+            // Scroll back to top when navigating
+            window.scrollTo(0,0);
         }
 
         window.tab = (t) => {
@@ -219,7 +221,6 @@
             refresh();
         }
 
-        // NEW PROFESSIONAL PLATE SEARCH LOGIC
         window.searchPlate = (val) => {
             const dropdown = document.getElementById('plateDropdown');
             if(!val) { dropdown.classList.add('hidden'); return; }
@@ -243,7 +244,6 @@
             document.getElementById('plateDropdown').classList.add('hidden');
         }
 
-        // Close dropdown when clicking outside
         document.addEventListener('click', (e) => {
             if(!e.target.closest('.group')) document.getElementById('plateDropdown').classList.add('hidden');
         });
