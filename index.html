@@ -479,7 +479,20 @@
             renderLogs();
             const vS = document.getElementById('vSearch').value.toUpperCase();
             document.getElementById('list-users').innerHTML = db.users.map((u) => `<div class="p-3 bg-white/60 border border-black/5 rounded-xl flex justify-between items-center text-xs font-black shadow-sm">${u.u} ${u.u !== 'admin' ? `<button onclick="delUser('${u.id}')" class="text-red-500 hover:underline">DELETE</button>` : '<span class="text-blue-500">MASTER</span>'}</div>`).join('');
-            document.getElementById('list-cars').innerHTML = db.config.vehicles.filter(v => v.plate.includes(vS)).map((v) => `<div class="p-3 bg-white/60 border border-black/5 rounded-xl flex justify-between items-center text-xs font-black shadow-sm"><div>${v.plate}<br><span class="text-[9px] font-medium text-slate-400">${v.type}</span></div> <button onclick="delV('${v.plate}')" class="text-red-500 hover:underline">REMOVE</button></div>`).join('');
+            
+            // Filtered vehicles view rendered as a numbered list with numeric count index
+            const filteredVehicles = db.config.vehicles.filter(v => v.plate.includes(vS));
+            document.getElementById('list-cars').innerHTML = filteredVehicles.map((v, index) => `
+                <div class="p-3 bg-white/60 border border-black/5 rounded-xl flex justify-between items-center text-xs font-black shadow-sm">
+                    <div>
+                        <span class="text-blue-600 mr-1">${index + 1}.</span>${v.plate}
+                        <br>
+                        <span class="text-[9px] font-medium text-slate-400 ml-4">${v.type}</span>
+                    </div> 
+                    <button onclick="delV('${v.plate}')" class="text-red-500 hover:underline">REMOVE</button>
+                </div>
+            `).join('');
+            
             document.getElementById('list-roads').innerHTML = db.config.routes.map((r) => `<div class="p-2.5 bg-white/60 border border-black/5 rounded-xl flex justify-between items-center text-[10px] font-black shadow-sm">${r} <button onclick="delR('${r}')" class="text-red-400 font-bold text-xs ml-1">×</button></div>`).join('');
             document.getElementById('iRoute').innerHTML = db.config.routes.map(r => `<option>${r}</option>`).join('');
         }
@@ -496,11 +509,19 @@
             btn.innerHTML = '<i class="fa-solid fa-plus text-sm"></i>';
         };
 
-        // Standard Utility Functions
+        // Standard Utility Functions with Added Duplicate Verification Guard
         window.addVehicle = async () => { 
             const p = document.getElementById('vPlate').value.trim().toUpperCase(); 
             const t = document.getElementById('vTypeManual').value.trim().toUpperCase(); 
             if(!p || !t) return; 
+
+            // Prevent matching data collisions or duplicate record entries
+            const isDuplicate = db.config.vehicles.some(v => v.plate === p);
+            if(isDuplicate) {
+                alert("Error: This Vehicle Plate is already registered in the database!");
+                return;
+            }
+
             db.config.vehicles.push({ plate: p, type: t }); 
             await setDoc(doc(firestore, "settings", "config"), db.config);
             document.getElementById('vPlate').value = ''; document.getElementById('vTypeManual').value = ''; 
@@ -515,3 +536,5 @@
     </script>
 </body>
 </html>
+
+```
