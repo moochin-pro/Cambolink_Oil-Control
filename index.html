@@ -28,34 +28,34 @@
 
         /* macOS Glassmorphism */
         .mac-window {
-            background: rgba(255, 255, 255, 0.75);
-            backdrop-filter: blur(30px) saturate(200%);
-            -webkit-backdrop-filter: blur(30px) saturate(200%);
-            border: 1px solid rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.82);
+            backdrop-filter: blur(35px) saturate(210%);
+            -webkit-backdrop-filter: blur(35px) saturate(210%);
+            border: 1px solid rgba(255, 255, 255, 0.45);
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         }
 
         /* macOS Top Menu Bar */
         .mac-menubar {
-            background: rgba(255, 255, 255, 0.65);
+            background: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.25);
         }
 
         /* macOS Dock */
         .mac-dock {
-            background: rgba(255, 255, 255, 0.35);
+            background: rgba(255, 255, 255, 0.4);
             backdrop-filter: blur(40px) saturate(150%);
             -webkit-backdrop-filter: blur(40px) saturate(150%);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.35);
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
         }
 
         /* Smooth Scrolling Table - Mobile Adaptive Optimization */
         .table-container { 
             height: auto;
-            max-height: calc(100vh - 540px); 
+            max-height: calc(100vh - 510px); 
             min-height: 280px; 
             overflow-y: auto; 
             scrollbar-width: thin;
@@ -65,7 +65,7 @@
         
         @media (min-width: 1024px) {
             .table-container {
-                max-height: calc(100vh - 490px);
+                max-height: calc(100vh - 460px);
             }
         }
         
@@ -86,31 +86,31 @@
 
         .plate-results { 
             position: absolute; top: calc(100% + 5px); left: 0; right: 0; 
-            background: rgba(255,255,255,0.95); backdrop-filter: blur(15px); border-radius: 12px; z-index: 100; 
+            background: rgba(255,255,255,0.98); backdrop-filter: blur(20px); border-radius: 12px; z-index: 100; 
             max-height: 220px; overflow-y: auto; 
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15);
-            border: 1px solid rgba(255,255,255,0.4);
-            animation: fadeInDown 0.2s ease-out;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.18);
+            border: 1px solid rgba(255,255,255,0.5);
+            animation: fadeInDown 0.18s ease-out;
         }
 
         @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-10px); }
+            from { opacity: 0; transform: translateY(-8px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        tr { transition: background 0.2s; border-bottom: 1px solid rgba(0,0,0,0.03); }
-        tr:hover { background: rgba(0,0,0,0.02); }
+        tr { transition: background 0.15s; border-bottom: 1px solid rgba(0,0,0,0.025); }
+        tr:hover { background: rgba(59, 130, 246, 0.04); }
 
         /* System Form Controls styling */
         input, select {
             transition: all 0.2s;
             border: 1px solid rgba(0, 0, 0, 0.08) !important;
-            background: rgba(255,255,255,0.5) !important;
+            background: rgba(255,255,255,0.6) !important;
         }
         input:focus, select:focus {
             border-color: #3b82f6 !important;
             background: white !important;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
         }
     </style>
 </head>
@@ -120,7 +120,7 @@
         <div class="flex items-center gap-4">
             <i class="fa-brands fa-apple text-[14px]"></i>
             <span class="font-bold">Cambolink Oil</span>
-            <span class="hidden sm:inline font-normal opacity-70">System Management</span>
+            <span class="hidden sm:inline font-normal opacity-70">System Management Dashboard</span>
         </div>
         <div class="flex items-center gap-3 opacity-90">
             <i class="fa-solid fa-wifi"></i>
@@ -169,88 +169,120 @@
                     <span class="w-3 h-3 rounded-full bg-green-400"></span>
                 </div>
                 <div class="absolute left-1/2 -translate-x-1/2 text-xs font-bold text-slate-700 tracking-tight flex items-center gap-1.5">
-                    <i class="fa-solid fa-folder-open text-blue-500/80"></i> Oil Management Central Database
+                    <i class="fa-solid fa-folder-open text-blue-500/80"></i> Oil Management Database Hub
                 </div>
             </div>
 
             <div id="view-dash" class="flex-1 flex flex-col p-4 lg:p-6 space-y-4 overflow-y-auto lg:overflow-hidden">
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 shrink-0">
-                    <div class="bg-white/40 border border-black/5 p-5 rounded-2xl relative overflow-hidden group shadow-sm">
-                        <p class="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1">Fuel Consumption</p>
+                    <div class="bg-gradient-to-br from-slate-900 to-slate-800 p-5 rounded-2xl relative overflow-hidden shadow-md text-white">
+                        <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-1">Total Fuel Consumed</p>
                         <div class="flex items-baseline gap-1.5">
-                            <h2 class="text-3xl font-black text-slate-900" id="totalDisplay">0.00</h2>
-                            <span class="text-slate-500 font-bold text-xs">Liters</span>
+                            <h2 class="text-3xl font-black text-white tracking-tight" id="totalDisplay">0.00</h2>
+                            <span class="text-slate-400 font-bold text-xs">Liters</span>
                         </div>
+                        <i class="fa-solid fa-gas-pump absolute right-5 bottom-4 text-white/10 text-4xl pointer-events-none"></i>
                     </div>
 
-                    <div class="bg-white/40 border border-black/5 p-5 rounded-2xl md:col-span-2 flex flex-col sm:flex-row items-center gap-4 shadow-sm">
-                        <div class="w-full sm:w-1/2 space-y-2">
-                            <div class="flex justify-between items-end">
-                                <p class="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">Active Filters</p>
-                                <button onclick="exportData()" class="text-blue-600 font-bold text-xs hover:underline"><i class="fa-solid fa-file-export mr-1"></i>Export CSV</button>
+                    <div class="bg-white/50 border border-black/5 p-4 rounded-2xl md:col-span-2 flex flex-col justify-center gap-2 shadow-sm">
+                        <p class="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+                            <i class="fa-solid fa-warehouse text-emerald-600"></i> Active Inventory Stock Pools Balance Feed
+                        </p>
+                        <div id="dashStockList" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 text-xs font-bold"></div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 gap-4 shrink-0">
+                    <div class="bg-white/50 border border-black/5 p-4 rounded-2xl flex flex-col lg:flex-row items-center gap-4 shadow-sm">
+                        <div class="w-full lg:w-5/12 flex items-center gap-3">
+                            <div class="flex-1">
+                                <label class="text-[9px] font-black text-slate-400 uppercase ml-1 block mb-1">Start Date Range</label>
+                                <input type="date" id="fStart" onchange="renderLogs()" class="w-full p-2 rounded-xl text-xs font-bold">
                             </div>
-                            <div class="flex gap-2">
-                                <input type="date" id="fStart" onchange="renderLogs()" class="flex-1 p-2.5 rounded-xl text-xs font-bold">
-                                <input type="date" id="fEnd" onchange="renderLogs()" class="flex-1 p-2.5 rounded-xl text-xs font-bold">
+                            <div>
+                                <span class="text-slate-400 font-bold text-xs block pt-4">to</span>
+                            </div>
+                            <div class="flex-1">
+                                <label class="text-[9px] font-black text-slate-400 uppercase ml-1 block mb-1">End Date Range</label>
+                                <input type="date" id="fEnd" onchange="renderLogs()" class="w-full p-2 rounded-xl text-xs font-bold">
                             </div>
                         </div>
-                        <div class="w-full sm:w-1/2 relative">
-                            <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                            <input type="text" id="fSearch" oninput="renderLogs()" placeholder="Search Plate Number..." class="w-full pl-10 p-3 rounded-xl text-xs font-bold uppercase placeholder:text-slate-400">
+                        
+                        <div class="w-full lg:w-4/12 relative">
+                            <label class="text-[9px] font-black text-slate-400 uppercase ml-1 block mb-1">Search Database Lookup</label>
+                            <div class="relative">
+                                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                                <input type="text" id="fSearch" oninput="renderLogs()" placeholder="Type vehicle plate code..." class="w-full pl-9 p-2.5 rounded-xl text-xs font-bold uppercase placeholder:text-slate-400">
+                            </div>
+                        </div>
+
+                        <div class="w-full lg:w-3/12 lg:text-right pt-4 lg:pt-0 self-end">
+                            <button onclick="exportData()" class="w-full lg:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-5 py-3 rounded-xl transition-all shadow-sm shadow-blue-500/10 flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-file-export"></i> Export Spreadsheet CSV
+                            </button>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white/30 border border-black/5 p-4 rounded-2xl shrink-0 shadow-sm">
-                    <h3 class="text-[10px] font-black uppercase text-slate-500 tracking-wider mb-3 flex items-center gap-1.5">
-                        <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span> New Log Entry
+                <div class="bg-white/70 border border-blue-500/10 p-5 rounded-2xl shrink-0 shadow-sm border">
+                    <h3 class="text-[10px] font-black uppercase text-slate-500 tracking-wider mb-3.5 flex items-center gap-1.5">
+                        <span class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></span> Quick Record Logistics Form Engine
                     </h3>
-                    <form id="oilForm" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 items-end">
-                        <div class="lg:col-span-3 space-y-1">
-                            <label class="text-[9px] font-black text-slate-500 uppercase ml-1">Log Date & Time</label>
-                            <input type="datetime-local" id="iDate" required class="w-full p-3 bg-white/60 rounded-xl text-xs font-bold">
+                    <form id="oilForm" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3.5 items-end">
+                        <div class="lg:col-span-2 space-y-1">
+                            <label class="text-[9px] font-black text-slate-500 uppercase ml-1">Log Date</label>
+                            <input type="date" id="iDate" required class="w-full p-2.5 bg-white/80 rounded-xl text-xs font-bold">
+                        </div>
+                        <div class="lg:col-span-2 space-y-1">
+                            <label class="text-[9px] font-black text-blue-600 uppercase ml-1"><i class="fa-regular fa-clock mr-0.5"></i> Log Time</label>
+                            <input type="time" id="iTime" step="1" required class="w-full p-2.5 bg-blue-50/30 text-slate-900 font-bold rounded-xl text-xs">
                         </div>
                         <div class="lg:col-span-3 space-y-1 relative group">
-                            <label class="text-[9px] font-black text-slate-500 uppercase ml-1">Vehicle Plate</label>
-                            <input type="text" id="iPlate" autocomplete="off" oninput="searchPlate(this.value)" placeholder="Search..." required class="w-full p-3 bg-white/60 rounded-xl text-xs font-black uppercase placeholder:normal-case">
+                            <label class="text-[9px] font-black text-slate-500 uppercase ml-1">Vehicle Plate Selection</label>
+                            <input type="text" id="iPlate" autocomplete="off" oninput="searchPlate(this.value)" placeholder="Start typing plate..." required class="w-full p-2.5 bg-white/80 rounded-xl text-xs font-black uppercase placeholder:normal-case">
                             <div id="plateDropdown" class="plate-results hidden"></div>
                         </div>
+
+                        <input type="hidden" id="iType">
+
                         <div class="lg:col-span-2 space-y-1">
-                            <label class="text-[9px] font-black text-slate-500 uppercase ml-1">Class</label>
-                            <input type="text" id="iType" readonly class="w-full p-3 bg-slate-200/50 rounded-xl text-xs font-bold text-slate-500" placeholder="Model">
+                            <label class="text-[9px] font-black text-slate-500 uppercase ml-1">Route Hub</label>
+                            <select id="iRoute" required class="w-full p-2.5 bg-white/80 rounded-xl text-xs font-bold"></select>
                         </div>
                         <div class="lg:col-span-2 space-y-1">
-                            <label class="text-[9px] font-black text-slate-500 uppercase ml-1">Route</label>
-                            <select id="iRoute" required class="w-full p-3 bg-white/60 rounded-xl text-xs font-bold"></select>
+                            <label class="text-[9px] font-black text-emerald-700 uppercase ml-1"><i class="fa-solid fa-filter mr-0.5"></i> Stock Pool Source</label>
+                            <select id="iStockSource" required class="w-full p-2.5 bg-emerald-50/40 text-emerald-900 rounded-xl text-xs font-bold"></select>
                         </div>
                         <div class="lg:col-span-1 space-y-1">
-                            <label class="text-[9px] font-black text-blue-600 uppercase ml-1">Liters (L)</label>
-                            <input type="number" id="iAmt" step="0.01" required placeholder="0.00" class="w-full p-3 bg-blue-50/50 rounded-xl text-xs font-black text-blue-700">
+                            <label class="text-[9px] font-black text-blue-600 uppercase ml-1">Volume (L)</label>
+                            <input type="number" id="iAmt" step="0.01" required placeholder="0.00" class="w-full p-2.5 bg-blue-50/40 rounded-xl text-xs font-black text-blue-700">
                         </div>
                         <div class="lg:col-span-1">
-                            <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white p-3 rounded-xl transition-all flex items-center justify-center">
+                            <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white py-2.5 rounded-xl transition-all flex items-center justify-center shadow-sm active:scale-95">
                                 <i class="fa-solid fa-plus text-sm"></i>
                             </button>
                         </div>
                     </form>
                 </div>
 
-                <div class="bg-white/50 rounded-2xl flex-1 flex flex-col overflow-hidden border border-black/5 shadow-inner">
+                <div class="bg-white/60 rounded-2xl flex-1 flex flex-col overflow-hidden border border-black/5 shadow-inner">
                     <div class="table-container">
                         <div class="w-full overflow-x-auto -webkit-overflow-scrolling: touch;">
-                            <table class="w-full text-left text-xs border-collapse min-w-[700px] lg:min-w-0">
+                            <table class="w-full text-left text-xs border-collapse min-w-[750px] lg:min-w-0">
                                 <thead>
-                                    <tr class="bg-black/5 sticky top-0 backdrop-blur-md z-10">
-                                        <th class="px-6 py-3.5 text-[9px] font-black text-slate-500 uppercase tracking-wider">Timeline</th>
-                                        <th class="px-6 py-3.5 text-[9px] font-black text-slate-500 uppercase tracking-wider">Plate Identity</th>
-                                        <th class="px-6 py-3.5 text-[9px] font-black text-slate-500 uppercase tracking-wider">Configuration</th>
-                                        <th class="px-6 py-3.5 text-[9px] font-black text-slate-500 uppercase tracking-wider admin-only">Logged By</th>
-                                        <th class="px-6 py-3.5 text-[9px] font-black text-slate-500 uppercase tracking-wider text-right">Fuel Volume</th>
-                                        <th class="px-6 py-3.5 text-[9px] font-black text-slate-500 uppercase tracking-wider text-right admin-only">Manage</th>
+                                    <tr class="bg-slate-200/60 border-b border-black/5 sticky top-0 backdrop-blur-md z-10 text-slate-700">
+                                        <th class="px-6 py-3.5 text-[9px] font-black uppercase tracking-wider">Date Logged</th>
+                                        <th class="px-6 py-3.5 text-[9px] font-black uppercase tracking-wider">Time Logged</th>
+                                        <th class="px-6 py-3.5 text-[9px] font-black uppercase tracking-wider">Plate Identity</th>
+                                        <th class="px-6 py-3.5 text-[9px] font-black uppercase tracking-wider">Specs Configuration</th>
+                                        <th class="px-6 py-3.5 text-[9px] font-black uppercase tracking-wider">Stock Source</th>
+                                        <th class="px-6 py-3.5 text-[9px] font-black uppercase tracking-wider admin-only">Logged By</th>
+                                        <th class="px-6 py-3.5 text-[9px] font-black uppercase tracking-wider text-right">Fuel Volume</th>
+                                        <th class="px-6 py-3.5 text-[9px] font-black uppercase tracking-wider text-right admin-only">Manage</th>
                                     </tr>
                                 </thead>
-                                <tbody id="logTable" class="text-slate-700"></tbody>
+                                <tbody id="logTable" class="text-slate-700 font-medium"></tbody>
                             </table>
                         </div>
                     </div>
@@ -263,18 +295,31 @@
                         <h2 class="text-xl font-extrabold text-slate-900 tracking-tight">System Control Panel</h2>
                         <p class="text-xs text-slate-500">Configure core server settings and properties</p>
                     </div>
-                    <div class="flex p-1 bg-black/5 rounded-xl border border-black/5 w-full sm:w-auto">
-                        <button onclick="tab('users')" id="t-users" class="flex-1 sm:flex-none px-4 py-2 font-bold text-xs rounded-lg transition-all bg-white text-slate-800 shadow-sm">Users</button>
-                        <button onclick="tab('cars')" id="t-cars" class="flex-1 sm:flex-none px-4 py-2 font-bold text-xs rounded-lg transition-all text-slate-500">Vehicles</button>
-                        <button onclick="tab('roads')" id="t-roads" class="flex-1 sm:flex-none px-4 py-2 font-bold text-xs rounded-lg transition-all text-slate-500">Routes</button>
+                    <div class="flex p-1 bg-black/5 rounded-xl border border-black/5 w-full sm:w-auto overflow-x-auto">
+                        <button onclick="tab('users')" id="t-users" class="px-4 py-2 font-bold text-xs rounded-lg transition-all bg-white text-slate-800 shadow-sm whitespace-nowrap">Users</button>
+                        <button onclick="tab('cars')" id="t-cars" class="px-4 py-2 font-bold text-xs rounded-lg transition-all text-slate-500 whitespace-nowrap">Vehicles</button>
+                        <button onclick="tab('roads')" id="t-roads" class="px-4 py-2 font-bold text-xs rounded-lg transition-all text-slate-500 whitespace-nowrap">Routes</button>
+                        <button onclick="tab('stocks')" id="t-stocks" class="px-4 py-2 font-bold text-xs rounded-lg transition-all text-slate-500 whitespace-nowrap">Stock Oil Inventory</button>
                     </div>
                 </div>
 
                 <div id="sec-users" class="space-y-4 animate__animated animate__fadeIn animate__faster">
-                    <form id="uForm" class="flex flex-col sm:flex-row gap-3 p-4 bg-white/40 border border-black/5 rounded-2xl shadow-sm">
-                        <input type="text" id="uName" placeholder="New Username" class="flex-1 p-3 rounded-xl bg-white/60 font-medium text-xs" required>
-                        <input type="password" id="uPass" placeholder="Password" class="flex-1 p-3 rounded-xl bg-white/60 font-medium text-xs" required>
-                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 sm:py-0 rounded-xl font-bold text-xs tracking-wider uppercase transition-all">Create Account</button>
+                    <form id="uForm" class="flex flex-col md:flex-row gap-3 p-4 bg-white/40 border border-black/5 rounded-2xl shadow-sm items-end md:items-center">
+                        <div class="w-full md:flex-1 space-y-1">
+                            <label class="text-[9px] font-black text-slate-500 uppercase ml-1">Username</label>
+                            <input type="text" id="uName" placeholder="New Username" class="w-full p-3 rounded-xl bg-white/60 font-medium text-xs" required>
+                        </div>
+                        <div class="w-full md:flex-1 space-y-1">
+                            <label class="text-[9px] font-black text-slate-500 uppercase ml-1">Password</label>
+                            <input type="password" id="uPass" placeholder="Password" class="w-full p-3 rounded-xl bg-white/60 font-medium text-xs" required>
+                        </div>
+                        <div class="w-full md:w-44 space-y-1">
+                            <label class="text-[9px] font-black text-emerald-600 uppercase ml-1">Stock Authorization Scope</label>
+                            <select id="uStockScope" required class="w-full p-3 rounded-xl bg-white/60 font-bold text-xs">
+                                <option value="all">All Access</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white px-6 py-3.5 rounded-xl font-bold text-xs tracking-wider uppercase transition-all whitespace-nowrap self-end md:mt-5">Create Account</button>
                     </form>
                     <div id="list-users" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3"></div>
                 </div>
@@ -295,6 +340,15 @@
                         <button onclick="addRoute()" class="bg-slate-900 hover:bg-slate-800 text-white px-6 rounded-xl font-bold text-sm">+</button>
                     </div>
                     <div id="list-roads" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2"></div>
+                </div>
+
+                <div id="sec-stocks" class="hidden space-y-4 animate__animated animate__fadeIn animate__faster">
+                    <div class="flex flex-col sm:flex-row gap-3 p-4 bg-white/40 border border-black/5 rounded-2xl shadow-sm">
+                        <input type="text" id="sName" placeholder="Stock Code (e.g. PP, PPT, SR)" class="flex-1 p-3 rounded-xl bg-white/60 font-black uppercase text-xs" required>
+                        <input type="number" id="sQty" placeholder="Capacity Volume Liters (e.g. 1000)" step="0.01" class="flex-1 p-3 rounded-xl bg-white/60 font-bold text-xs" required>
+                        <button onclick="addStockLocation()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 sm:py-0 rounded-xl font-bold text-xs tracking-wider uppercase transition-all">Create Stock Pool</button>
+                    </div>
+                    <div id="list-stocks" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3"></div>
                 </div>
             </div>
         </main>
@@ -336,7 +390,7 @@
         const firestore = getFirestore(app);
 
         let session = null;
-        let db = { users: [], config: { vehicles: [], routes: ['Phnom Penh'] }, logs: [] };
+        let db = { users: [], config: { vehicles: [], routes: ['Phnom Penh'], stocks: [] }, logs: [] };
         let filteredResults = [];
 
         function runClock() {
@@ -348,13 +402,20 @@
 
         onSnapshot(collection(firestore, "users"), (s) => {
             db.users = s.docs.map(d => ({ id: d.id, ...d.data() }));
-            if (db.users.length === 0) setDoc(doc(firestore, "users", "admin_default"), { u: 'admin', p: 'cambo@123', role: 'admin' });
+            if (db.users.length === 0) setDoc(doc(firestore, "users", "admin_default"), { u: 'admin', p: 'cambo@123', role: 'admin', stockScope: 'all' });
             refresh();
         });
 
         onSnapshot(doc(firestore, "settings", "config"), (s) => {
-            if (s.exists()) { db.config = s.data(); refresh(); }
-            else { setDoc(doc(firestore, "settings", "config"), db.config); }
+            if (s.exists()) { 
+                db.config = s.data(); 
+                if (!db.config.stocks) db.config.stocks = [];
+                refresh(); 
+            }
+            else { 
+                if (!db.config.stocks) db.config.stocks = [];
+                setDoc(doc(firestore, "settings", "config"), db.config); 
+            }
         });
 
         onSnapshot(query(collection(firestore, "oil_logs"), orderBy("date", "desc")), (s) => {
@@ -373,11 +434,11 @@
         }
 
         window.tab = (t) => {
-            ['users', 'cars', 'roads'].forEach(x => {
+            ['users', 'cars', 'roads', 'stocks'].forEach(x => {
                 document.getElementById(`sec-${x}`).classList.toggle('hidden', x !== t);
                 const btn = document.getElementById(`t-${x}`);
-                if(x===t) btn.className = "flex-1 sm:flex-none px-4 py-2 font-bold text-xs rounded-lg transition-all bg-white text-slate-800 shadow-sm";
-                else btn.className = "flex-1 sm:flex-none px-4 py-2 font-bold text-xs rounded-lg transition-all text-slate-500";
+                if(x===t) btn.className = "px-4 py-2 font-bold text-xs rounded-lg transition-all bg-white text-slate-800 shadow-sm whitespace-nowrap";
+                else btn.className = "px-4 py-2 font-bold text-xs rounded-lg transition-all text-slate-500 whitespace-nowrap";
             });
         }
 
@@ -397,11 +458,14 @@
         };
 
         function init() {
-            // Setup current local time format for datetime-local input fields (YYYY-MM-DDTHH:MM)
-            const now = new Date();
-            const tzOffset = now.getTimezoneOffset() * 60000;
-            const localISOTime = (new Date(now - tzOffset)).toISOString().slice(0, 16);
-            document.getElementById('iDate').value = localISOTime;
+            const today = new Date();
+            document.getElementById('iDate').valueAsDate = today;
+            
+            const hh = String(today.getHours()).padStart(2, '0');
+            const mm = String(today.getMinutes()).padStart(2, '0');
+            const ss = String(today.getSeconds()).padStart(2, '0');
+            document.getElementById('iTime').value = `${hh}:${mm}:${ss}`;
+            
             refresh();
         }
 
@@ -421,7 +485,7 @@
 
         window.selectPlate = (plate, type) => {
             document.getElementById('iPlate').value = plate;
-            document.getElementById('iType').value = type;
+            document.getElementById('iType').value = type; 
             document.getElementById('plateDropdown').classList.add('hidden');
         }
 
@@ -435,6 +499,11 @@
             const end = document.getElementById('fEnd').value;
             let total = 0;
             
+            let totalDeductions = {};
+            if(db.config.stocks) {
+                db.config.stocks.forEach(st => totalDeductions[st.name] = 0);
+            }
+
             filteredResults = db.logs.filter(l => {
                 const d = new Date(l.date); d.setHours(0,0,0,0);
                 const userMatch = (session.role === 'admin' || l.user === session.u);
@@ -445,54 +514,140 @@
                 return userMatch && searchMatch && rangeMatch;
             });
 
+            db.logs.forEach(l => {
+                if (l.stockSource && totalDeductions[l.stockSource] !== undefined) {
+                    totalDeductions[l.stockSource] += l.amt;
+                }
+            });
+
             document.getElementById('logTable').innerHTML = filteredResults.map((l, idx) => {
                 total += l.amt;
-                
-                // Format date and time smoothly for data visualization table
-                const logDateTime = new Date(l.date);
-                const displayDate = logDateTime.toLocaleDateString();
-                const displayTime = logDateTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const dtObj = new Date(l.date);
+                const datePart = dtObj.toLocaleDateString([], { year: 'numeric', month: '2-digit', day: '2-digit' });
+                const timePart = dtObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
-                return `<tr class="animate__animated animate__fadeInUp" style="animation-delay: ${idx * 0.03}s">
-                    <td class="px-6 py-4 font-bold text-slate-400">${displayDate} <span class="text-[10px] font-medium ml-1 bg-black/5 px-1.5 py-0.5 rounded text-slate-500">${displayTime}</span></td>
-                    <td class="px-6 py-4 font-black text-slate-900 tracking-tight">${l.plate}</td>
-                    <td class="px-6 py-4">
+                return `<tr class="animate__animated animate__fadeInUp" style="animation-delay: ${idx * 0.02}s">
+                    <td class="px-6 py-3.5 font-bold text-slate-500">${datePart}</td>
+                    <td class="px-6 py-3.5 font-semibold text-blue-600/80">${timePart}</td>
+                    <td class="px-6 py-3.5 font-black text-slate-900 tracking-tight">${l.plate}</td>
+                    <td class="px-6 py-3.5">
                         <div class="flex items-center gap-1.5">
-                            <span class="text-[9px] font-black bg-black/5 px-2 py-0.5 rounded text-slate-600">${l.type}</span>
-                            <span class="font-semibold text-slate-400">${l.route}</span>
+                            <span class="text-[9px] font-black bg-slate-900/5 px-2 py-0.5 rounded text-slate-700">${l.type || 'N/A'}</span>
+                            <span class="font-bold text-slate-400 text-[11px]">${l.route}</span>
                         </div>
                     </td>
-                    <td class="px-6 py-4 admin-only font-bold text-blue-600/70 uppercase">${l.user}</td>
-                    <td class="px-6 py-4 text-right font-black text-slate-900">${l.amt.toFixed(2)} <span class="text-slate-400 font-bold text-[9px]">L</span></td>
-                    <td class="px-6 py-4 text-right admin-only">
+                    <td class="px-6 py-3.5">
+                        <span class="text-[10px] font-black bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded uppercase tracking-wide">${l.stockSource || 'None'}</span>
+                    </td>
+                    <td class="px-6 py-3.5 admin-only font-bold text-slate-500 uppercase">${l.user}</td>
+                    <td class="px-6 py-3.5 text-right font-black text-slate-900 text-sm">${l.amt.toFixed(2)} <span class="text-slate-400 font-bold text-[9px]">L</span></td>
+                    <td class="px-6 py-3.5 text-right admin-only">
                         <button onclick="delLog('${l.id}')" class="w-7 h-7 rounded-lg hover:bg-red-50 text-slate-300 hover:text-red-500 transition-all">
                             <i class="fa-solid fa-trash-can text-xs"></i>
                         </button>
                     </td>
                 </tr>`;
-            }).join('') || '<tr><td colspan="6" class="py-20 text-center"><div class="opacity-25 font-black text-2xl tracking-wider text-slate-400">NO DATA FOUND</div></td></tr>';
+            }).join('') || '<tr><td colspan="8" class="py-20 text-center"><div class="opacity-25 font-black text-2xl tracking-wider text-slate-400">NO DATA FOUND</div></td></tr>';
             
             document.getElementById('totalDisplay').innerText = total.toFixed(2);
+
+            if(db.config.stocks) {
+                const allowedStocks = db.config.stocks.filter(st => session.role === 'admin' || !session.stockScope || session.stockScope === 'all' || session.stockScope === st.name);
+                
+                document.getElementById('dashStockList').innerHTML = allowedStocks.map(st => {
+                    const remaining = parseFloat(st.qty) - (totalDeductions[st.name] || 0);
+                    return `
+                        <div class="bg-white/70 p-2 rounded-xl border border-black/5 flex justify-between items-center px-3 shadow-sm">
+                            <span class="text-slate-400 uppercase tracking-wider text-[10px]">${st.name}</span>
+                            <span class="${remaining <= 100 ? 'text-red-600 font-extrabold animate-pulse' : 'text-slate-900'} font-black">${remaining.toFixed(1)}L</span>
+                        </div>
+                    `;
+                }).join('') || '<div class="text-xs text-slate-400 font-medium col-span-2">No authorized stock scopes found</div>';
+            }
         }
 
+        // Updated Export CSV Handler to Split Time and Date Perfectly into Columns
         window.exportData = () => {
             if(filteredResults.length === 0) return alert("No data to export");
-            let csv = "Date,Time,Plate,Type,Route,User,Liters\n";
+            
+            // Separated Date and Time headers completely into individual split columns
+            let csv = "Date,Time,Plate Number,Vehicle Type,Route Destination,Stock Source,Logged By,Liters\n";
+            
             filteredResults.forEach(l => {
-                const dt = new Date(l.date);
-                csv += `${dt.toLocaleDateString()},${dt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })},${l.plate},${l.type},${l.route},${l.user},${l.amt}\n`;
+                const dObj = new Date(l.date);
+                
+                // Formats custom ISO values cleanly into separated text strings without inline commas
+                const year = dObj.getFullYear();
+                const month = String(dObj.getMonth() + 1).padStart(2, '0');
+                const day = String(dObj.getDate()).padStart(2, '0');
+                const cleanDate = `${year}-${month}-${day}`;
+                
+                const cleanTime = dObj.toTimeString().split(' ')[0]; // Returns perfectly clean "HH:MM:SS"
+                
+                const plate = l.plate || '';
+                const type = l.type || 'N/A';
+                const route = l.route || '';
+                const source = l.stockSource || 'None';
+                const user = l.user || '';
+                const amount = l.amt || 0;
+                
+                csv += `"${cleanDate}","${cleanTime}","${plate}","${type}","${route}","${source}","${user}",${amount}\n`;
             });
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'CL21_Report.csv'; a.click();
+            
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const a = document.createElement('a'); 
+            a.href = URL.createObjectURL(blob); 
+            a.download = 'CL21_Split_Oil_Report.csv'; 
+            a.click();
         };
 
         window.refresh = () => {
             renderLogs();
             const vS = document.getElementById('vSearch').value.toUpperCase();
-            document.getElementById('list-users').innerHTML = db.users.map((u) => `<div class="p-3 bg-white/60 border border-black/5 rounded-xl flex justify-between items-center text-xs font-black shadow-sm">${u.u} ${u.u !== 'admin' ? `<button onclick="delUser('${u.id}')" class="text-red-500 hover:underline">DELETE</button>` : '<span class="text-blue-500">MASTER</span>'}</div>`).join('');
-            document.getElementById('list-cars').innerHTML = db.config.vehicles.filter(v => v.plate.includes(vS)).map((v) => `<div class="p-3 bg-white/60 border border-black/5 rounded-xl flex justify-between items-center text-xs font-black shadow-sm"><div>${v.plate}<br><span class="text-[9px] font-medium text-slate-400">${v.type}</span></div> <button onclick="delV('${v.plate}')" class="text-red-500 hover:underline">REMOVE</button></div>`).join('');
+            
+            document.getElementById('list-users').innerHTML = db.users.map((u) => `
+                <div class="p-3 bg-white/60 border border-black/5 rounded-xl flex flex-col gap-1 text-xs font-black shadow-sm">
+                    <div class="flex justify-between items-center">
+                        <span>${u.u}</span>
+                        ${u.u !== 'admin' ? `<button onclick="delUser('${u.id}')" class="text-red-500 hover:underline">DELETE</button>` : '<span class="text-blue-500 text-[10px]">MASTER</span>'}
+                    </div>
+                    <div class="text-[9px] font-medium text-slate-400">
+                        Scope: <span class="text-emerald-700 font-bold uppercase">${u.stockScope || 'all'}</span>
+                    </div>
+                </div>
+            `).join('');
+            
+            const filteredVehicles = db.config.vehicles.filter(v => v.plate.includes(vS));
+            document.getElementById('list-cars').innerHTML = filteredVehicles.map((v, index) => `
+                <div class="p-3 bg-white/60 border border-black/5 rounded-xl flex justify-between items-center text-xs font-black shadow-sm">
+                    <div>
+                        <span class="text-blue-600 mr-1">${index + 1}.</span>${v.plate}
+                        <br>
+                        <span class="text-[9px] font-medium text-slate-400 ml-4">${v.type}</span>
+                    </div> 
+                    <button onclick="delV('${v.plate}')" class="text-red-500 hover:underline">REMOVE</button>
+                </div>
+            `).join('');
+            
             document.getElementById('list-roads').innerHTML = db.config.routes.map((r) => `<div class="p-2.5 bg-white/60 border border-black/5 rounded-xl flex justify-between items-center text-[10px] font-black shadow-sm">${r} <button onclick="delR('${r}')" class="text-red-400 font-bold text-xs ml-1">×</button></div>`).join('');
             document.getElementById('iRoute').innerHTML = db.config.routes.map(r => `<option>${r}</option>`).join('');
+
+            if(db.config.stocks) {
+                document.getElementById('uStockScope').innerHTML = '<option value="all">All Access</option>' + db.config.stocks.map(st => `<option value="${st.name}">${st.name}</option>`).join('');
+
+                const selectableStocks = db.config.stocks.filter(st => !session || session.role === 'admin' || !session.stockScope || session.stockScope === 'all' || session.stockScope === st.name);
+                document.getElementById('iStockSource').innerHTML = selectableStocks.map(st => `<option value="${st.name}">${st.name}</option>`).join('');
+                
+                document.getElementById('list-stocks').innerHTML = db.config.stocks.map(st => `
+                    <div class="p-3 bg-white/60 border border-black/5 rounded-xl flex justify-between items-center text-xs font-black shadow-sm">
+                        <div>
+                            <span class="text-emerald-700 font-extrabold uppercase">${st.name}</span>
+                            <br><span class="text-[9px] font-medium text-slate-400">Total Capacity: ${st.qty}L</span>
+                        </div>
+                        <button onclick="delStockLocation('${st.name}')" class="text-red-500 hover:underline">REMOVE</button>
+                    </div>
+                `).join('');
+            }
         }
 
         document.getElementById('oilForm').onsubmit = async (e) => {
@@ -503,22 +658,34 @@
             const v = db.config.vehicles.find(v => v.plate === plate);
             if(!v) { alert("Vehicle Plate Not Found!"); btn.innerHTML = '<i class="fa-solid fa-plus text-sm"></i>'; return; }
             
-            // Extract the user's manual date and time input seamlessly
+            const dateValue = document.getElementById('iDate').value; 
+            const timeValue = document.getElementById('iTime').value; 
+            
+            const timeParts = timeValue.split(':');
+            const hours = parseInt(timeParts[0], 10) || 0;
+            const minutes = parseInt(timeParts[1], 10) || 0;
+            const seconds = parseInt(timeParts[2], 10) || 0;
+
+            const chosenDate = new Date(dateValue);
+            chosenDate.setHours(hours, minutes, seconds, 0);
+
             await addDoc(collection(firestore, "oil_logs"), { 
                 plate, 
-                type: v.type, 
+                type: document.getElementById('iType').value || v.type, 
                 route: document.getElementById('iRoute').value, 
+                stockSource: document.getElementById('iStockSource').value,
                 amt: parseFloat(document.getElementById('iAmt').value), 
                 user: session.u, 
-                date: new Date(document.getElementById('iDate').value).toISOString() 
+                date: chosenDate.toISOString() 
             });
             
             document.getElementById('iAmt').value = ''; document.getElementById('iPlate').value = ''; document.getElementById('iType').value = '';
             
-            // Reset the date-time selection box to current timestamp automatically for next entry
             const now = new Date();
-            const tzOffset = now.getTimezoneOffset() * 60000;
-            document.getElementById('iDate').value = (new Date(now - tzOffset)).toISOString().slice(0, 16);
+            const hh = String(now.getHours()).padStart(2, '0');
+            const mm = String(now.getMinutes()).padStart(2, '0');
+            const ss = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('iTime').value = `${hh}:${mm}:${ss}`;
             
             btn.innerHTML = '<i class="fa-solid fa-plus text-sm"></i>';
         };
@@ -527,16 +694,52 @@
             const p = document.getElementById('vPlate').value.trim().toUpperCase(); 
             const t = document.getElementById('vTypeManual').value.trim().toUpperCase(); 
             if(!p || !t) return; 
+
+            const isDuplicate = db.config.vehicles.some(v => v.plate === p);
+            if(isDuplicate) {
+                alert("Error: This Vehicle Plate is already registered in the database!");
+                return;
+            }
+
             db.config.vehicles.push({ plate: p, type: t }); 
             await setDoc(doc(firestore, "settings", "config"), db.config);
             document.getElementById('vPlate').value = ''; document.getElementById('vTypeManual').value = ''; 
         };
+
+        window.addStockLocation = async () => {
+            const name = document.getElementById('sName').value.trim().toUpperCase();
+            const qty = parseFloat(document.getElementById('sQty').value);
+            if(!name || isNaN(qty)) return;
+            if(!db.config.stocks) db.config.stocks = [];
+            if(db.config.stocks.some(x => x.name === name)) { alert("Stock hub already configured!"); return; }
+            db.config.stocks.push({ name, qty });
+            await setDoc(doc(firestore, "settings", "config"), db.config);
+            document.getElementById('sName').value = ''; document.getElementById('sQty').value = '';
+        };
+
+        window.delStockLocation = async (name) => {
+            if(confirm(`Completely remove stock target ${name}?`)) {
+                db.config.stocks = db.config.stocks.filter(x => x.name !== name);
+                await setDoc(doc(firestore, "settings", "config"), db.config);
+            }
+        };
+
         window.delV = async (p) => { if(confirm("Remove vehicle?")) { db.config.vehicles = db.config.vehicles.filter(v => v.plate !== p); await setDoc(doc(firestore, "settings", "config"), db.config); }};
         window.delR = async (r) => { if(confirm("Remove route?")) { db.config.routes = db.config.routes.filter(x => x !== r); await setDoc(doc(firestore, "settings", "config"), db.config); }};
         window.delLog = async (id) => { if(confirm("Delete log entry?")){ await deleteDoc(doc(firestore, "oil_logs", id)); }};
         window.addRoute = async () => { const r = document.getElementById('rName').value.trim(); if(!r) return; db.config.routes.push(r); await setDoc(doc(firestore, "settings", "config"), db.config); document.getElementById('rName').value = ''; };
         window.delUser = async (id) => { if(confirm("Delete user account?")) await deleteDoc(doc(firestore, "users", id)); };
-        document.getElementById('uForm').onsubmit = async (e) => { e.preventDefault(); const u = document.getElementById('uName').value.trim(); const p = document.getElementById('uPass').value.trim(); if(!u || !p) return; await addDoc(collection(firestore, "users"), { u, p, role: 'staff' }); document.getElementById('uName').value = ''; document.getElementById('uPass').value = ''; };
+        
+        document.getElementById('uForm').onsubmit = async (e) => { 
+            e.preventDefault(); 
+            const u = document.getElementById('uName').value.trim(); 
+            const p = document.getElementById('uPass').value.trim(); 
+            const stockScope = document.getElementById('uStockScope').value;
+            if(!u || !p) return; 
+            
+            await addDoc(collection(firestore, "users"), { u, p, role: 'staff', stockScope }); 
+            document.getElementById('uName').value = ''; document.getElementById('uPass').value = ''; 
+        };
 
     </script>
 </body>
