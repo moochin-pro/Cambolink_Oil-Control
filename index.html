@@ -207,9 +207,9 @@
                         <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span> New Log Entry
                     </h3>
                     <form id="oilForm" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 items-end">
-                        <div class="lg:col-span-2 space-y-1">
-                            <label class="text-[9px] font-black text-slate-500 uppercase ml-1">Log Date</label>
-                            <input type="date" id="iDate" required class="w-full p-3 bg-white/60 rounded-xl text-xs font-bold">
+                        <div class="lg:col-span-3 space-y-1">
+                            <label class="text-[9px] font-black text-slate-500 uppercase ml-1">Log Date & Time</label>
+                            <input type="datetime-local" id="iDate" required class="w-full p-3 bg-white/60 rounded-xl text-xs font-bold">
                         </div>
                         <div class="lg:col-span-3 space-y-1 relative group">
                             <label class="text-[9px] font-black text-slate-500 uppercase ml-1">Vehicle Plate</label>
@@ -224,7 +224,7 @@
                             <label class="text-[9px] font-black text-slate-500 uppercase ml-1">Route</label>
                             <select id="iRoute" required class="w-full p-3 bg-white/60 rounded-xl text-xs font-bold"></select>
                         </div>
-                        <div class="lg:col-span-2 space-y-1">
+                        <div class="lg:col-span-1 space-y-1">
                             <label class="text-[9px] font-black text-blue-600 uppercase ml-1">Liters (L)</label>
                             <input type="number" id="iAmt" step="0.01" required placeholder="0.00" class="w-full p-3 bg-blue-50/50 rounded-xl text-xs font-black text-blue-700">
                         </div>
@@ -339,7 +339,6 @@
         let db = { users: [], config: { vehicles: [], routes: ['Phnom Penh'] }, logs: [] };
         let filteredResults = [];
 
-        // Simple real time desktop clock execution function
         function runClock() {
             const time = new Date();
             document.getElementById('macClock').innerText = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -367,7 +366,6 @@
             document.getElementById('view-dash').classList.toggle('hidden', v !== 'dash');
             document.getElementById('view-admin').classList.toggle('hidden', v !== 'admin');
             
-            // Toggle macOS Bottom App Active Dock Dot indicators
             document.getElementById('dockIndicatorDash').classList.toggle('opacity-100', v === 'dash');
             document.getElementById('dockIndicatorDash').classList.toggle('opacity-0', v !== 'dash');
             document.getElementById('dockIndicatorAdmin').classList.toggle('opacity-100', v === 'admin');
@@ -399,7 +397,11 @@
         };
 
         function init() {
-            document.getElementById('iDate').valueAsDate = new Date();
+            // Setup current local time format for datetime-local input fields (YYYY-MM-DDTHH:MM)
+            const now = new Date();
+            const tzOffset = now.getTimezoneOffset() * 60000;
+            const localISOTime = (new Date(now - tzOffset)).toISOString().slice(0, 16);
+            document.getElementById('iDate').value = localISOTime;
             refresh();
         }
 
@@ -445,8 +447,14 @@
 
             document.getElementById('logTable').innerHTML = filteredResults.map((l, idx) => {
                 total += l.amt;
+                
+                // Format date and time smoothly for data visualization table
+                const logDateTime = new Date(l.date);
+                const displayDate = logDateTime.toLocaleDateString();
+                const displayTime = logDateTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
                 return `<tr class="animate__animated animate__fadeInUp" style="animation-delay: ${idx * 0.03}s">
-                    <td class="px-6 py-4 font-bold text-slate-400">${new Date(l.date).toLocaleDateString()}</td>
+                    <td class="px-6 py-4 font-bold text-slate-400">${displayDate} <span class="text-[10px] font-medium ml-1 bg-black/5 px-1.5 py-0.5 rounded text-slate-500">${displayTime}</span></td>
                     <td class="px-6 py-4 font-black text-slate-900 tracking-tight">${l.plate}</td>
                     <td class="px-6 py-4">
                         <div class="flex items-center gap-1.5">
@@ -469,8 +477,11 @@
 
         window.exportData = () => {
             if(filteredResults.length === 0) return alert("No data to export");
-            let csv = "Date,Plate,Type,Route,User,Liters\n";
-            filteredResults.forEach(l => csv += `${new Date(l.date).toLocaleDateString()},${l.plate},${l.type},${l.route},${l.user},${l.amt}\n`);
+            let csv = "Date,Time,Plate,Type,Route,User,Liters\n";
+            filteredResults.forEach(l => {
+                const dt = new Date(l.date);
+                csv += `${dt.toLocaleDateString()},${dt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })},${l.plate},${l.type},${l.route},${l.user},${l.amt}\n`;
+            });
             const blob = new Blob([csv], { type: 'text/csv' });
             const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'CL21_Report.csv'; a.click();
         };
@@ -479,20 +490,7 @@
             renderLogs();
             const vS = document.getElementById('vSearch').value.toUpperCase();
             document.getElementById('list-users').innerHTML = db.users.map((u) => `<div class="p-3 bg-white/60 border border-black/5 rounded-xl flex justify-between items-center text-xs font-black shadow-sm">${u.u} ${u.u !== 'admin' ? `<button onclick="delUser('${u.id}')" class="text-red-500 hover:underline">DELETE</button>` : '<span class="text-blue-500">MASTER</span>'}</div>`).join('');
-            
-            // Filtered vehicles view rendered as a numbered list with numeric count index
-            const filteredVehicles = db.config.vehicles.filter(v => v.plate.includes(vS));
-            document.getElementById('list-cars').innerHTML = filteredVehicles.map((v, index) => `
-                <div class="p-3 bg-white/60 border border-black/5 rounded-xl flex justify-between items-center text-xs font-black shadow-sm">
-                    <div>
-                        <span class="text-blue-600 mr-1">${index + 1}.</span>${v.plate}
-                        <br>
-                        <span class="text-[9px] font-medium text-slate-400 ml-4">${v.type}</span>
-                    </div> 
-                    <button onclick="delV('${v.plate}')" class="text-red-500 hover:underline">REMOVE</button>
-                </div>
-            `).join('');
-            
+            document.getElementById('list-cars').innerHTML = db.config.vehicles.filter(v => v.plate.includes(vS)).map((v) => `<div class="p-3 bg-white/60 border border-black/5 rounded-xl flex justify-between items-center text-xs font-black shadow-sm"><div>${v.plate}<br><span class="text-[9px] font-medium text-slate-400">${v.type}</span></div> <button onclick="delV('${v.plate}')" class="text-red-500 hover:underline">REMOVE</button></div>`).join('');
             document.getElementById('list-roads').innerHTML = db.config.routes.map((r) => `<div class="p-2.5 bg-white/60 border border-black/5 rounded-xl flex justify-between items-center text-[10px] font-black shadow-sm">${r} <button onclick="delR('${r}')" class="text-red-400 font-bold text-xs ml-1">×</button></div>`).join('');
             document.getElementById('iRoute').innerHTML = db.config.routes.map(r => `<option>${r}</option>`).join('');
         }
@@ -504,24 +502,31 @@
             const plate = document.getElementById('iPlate').value.toUpperCase();
             const v = db.config.vehicles.find(v => v.plate === plate);
             if(!v) { alert("Vehicle Plate Not Found!"); btn.innerHTML = '<i class="fa-solid fa-plus text-sm"></i>'; return; }
-            await addDoc(collection(firestore, "oil_logs"), { plate, type: v.type, route: document.getElementById('iRoute').value, amt: parseFloat(document.getElementById('iAmt').value), user: session.u, date: new Date(document.getElementById('iDate').value).toISOString() });
+            
+            // Extract the user's manual date and time input seamlessly
+            await addDoc(collection(firestore, "oil_logs"), { 
+                plate, 
+                type: v.type, 
+                route: document.getElementById('iRoute').value, 
+                amt: parseFloat(document.getElementById('iAmt').value), 
+                user: session.u, 
+                date: new Date(document.getElementById('iDate').value).toISOString() 
+            });
+            
             document.getElementById('iAmt').value = ''; document.getElementById('iPlate').value = ''; document.getElementById('iType').value = '';
+            
+            // Reset the date-time selection box to current timestamp automatically for next entry
+            const now = new Date();
+            const tzOffset = now.getTimezoneOffset() * 60000;
+            document.getElementById('iDate').value = (new Date(now - tzOffset)).toISOString().slice(0, 16);
+            
             btn.innerHTML = '<i class="fa-solid fa-plus text-sm"></i>';
         };
 
-        // Standard Utility Functions with Added Duplicate Verification Guard
         window.addVehicle = async () => { 
             const p = document.getElementById('vPlate').value.trim().toUpperCase(); 
             const t = document.getElementById('vTypeManual').value.trim().toUpperCase(); 
             if(!p || !t) return; 
-
-            // Prevent matching data collisions or duplicate record entries
-            const isDuplicate = db.config.vehicles.some(v => v.plate === p);
-            if(isDuplicate) {
-                alert("Error: This Vehicle Plate is already registered in the database!");
-                return;
-            }
-
             db.config.vehicles.push({ plate: p, type: t }); 
             await setDoc(doc(firestore, "settings", "config"), db.config);
             document.getElementById('vPlate').value = ''; document.getElementById('vTypeManual').value = ''; 
@@ -536,5 +541,3 @@
     </script>
 </body>
 </html>
-
-```
