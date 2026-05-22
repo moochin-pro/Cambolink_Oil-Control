@@ -16,102 +16,32 @@
             --bg-mac: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop');
         }
 
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            background: var(--bg-mac) no-repeat center center fixed;
-            background-size: cover;
-            color: #1e293b; 
-            overflow-x: hidden;
-            letter-spacing: -0.01em;
-            height: 100vh;
-        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-mac) no-repeat center center fixed; background-size: cover; color: #1e293b; overflow-x: hidden; letter-spacing: -0.01em; height: 100vh; }
 
-        /* macOS Glassmorphism */
-        .mac-window {
-            background: rgba(255, 255, 255, 0.82);
-            backdrop-filter: blur(35px) saturate(210%);
-            -webkit-backdrop-filter: blur(35px) saturate(210%);
-            border: 1px solid rgba(255, 255, 255, 0.45);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-        }
+        .mac-window { background: rgba(255, 255, 255, 0.82); backdrop-filter: blur(35px) saturate(210%); -webkit-backdrop-filter: blur(35px) saturate(210%); border: 1px solid rgba(255, 255, 255, 0.45); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
+        .mac-menubar { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.25); }
+        .mac-dock { background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(40px) saturate(150%); -webkit-backdrop-filter: blur(40px) saturate(150%); border: 1px solid rgba(255, 255, 255, 0.35); box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15); }
 
-        /* macOS Top Menu Bar */
-        .mac-menubar {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.25);
-        }
-
-        /* macOS Dock */
-        .mac-dock {
-            background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(40px) saturate(150%);
-            -webkit-backdrop-filter: blur(40px) saturate(150%);
-            border: 1px solid rgba(255, 255, 255, 0.35);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-        }
-
-        /* Smooth Scrolling Table - Mobile Adaptive Optimization */
-        .table-container { 
-            height: auto;
-            max-height: calc(100vh - 510px); 
-            min-height: 280px; 
-            overflow-y: auto; 
-            scrollbar-width: thin;
-            scrollbar-color: rgba(0,0,0,0.15) transparent;
-            -webkit-overflow-scrolling: touch;
-        }
-        
-        @media (min-width: 1024px) {
-            .table-container {
-                max-height: calc(100vh - 460px);
-            }
-        }
-        
+        .table-container { height: auto; max-height: calc(100vh - 510px); min-height: 280px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(0,0,0,0.15) transparent; -webkit-overflow-scrolling: touch; }
         .table-container::-webkit-scrollbar { width: 6px; }
         .table-container::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 10px; }
 
-        /* Dock Icon Scaling animations */
-        .dock-item {
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .dock-item:hover {
-            transform: translateY(-8px) scale(1.12);
-        }
+        .dock-item { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        .dock-item:hover { transform: translateY(-8px) scale(1.12); }
 
         .admin-only { display: none !important; }
         body.is-admin .admin-only { display: block !important; }
         body.is-admin .admin-only-flex { display: flex !important; }
 
-        .plate-results { 
-            position: absolute; top: calc(100% + 5px); left: 0; right: 0; 
-            background: rgba(255,255,255,0.98); backdrop-filter: blur(20px); border-radius: 12px; z-index: 100; 
-            max-height: 220px; overflow-y: auto; 
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.18);
-            border: 1px solid rgba(255,255,255,0.5);
-            animation: fadeInDown 0.18s ease-out;
-        }
+        .plate-results { position: absolute; top: calc(100% + 5px); left: 0; right: 0; background: rgba(255,255,255,0.98); backdrop-filter: blur(20px); border-radius: 12px; z-index: 100; max-height: 220px; overflow-y: auto; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.18); border: 1px solid rgba(255,255,255,0.5); animation: fadeInDown 0.18s ease-out; }
 
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
 
         tr { transition: background 0.15s; border-bottom: 1px solid rgba(0,0,0,0.025); }
         tr:hover { background: rgba(59, 130, 246, 0.04); }
 
-        /* System Form Controls styling */
-        input, select {
-            transition: all 0.2s;
-            border: 1px solid rgba(0, 0, 0, 0.08) !important;
-            background: rgba(255,255,255,0.6) !important;
-        }
-        input:focus, select:focus {
-            border-color: #3b82f6 !important;
-            background: white !important;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-        }
+        input, select { transition: all 0.2s; border: 1px solid rgba(0, 0, 0, 0.08) !important; background: rgba(255,255,255,0.6) !important; }
+        input:focus, select:focus { border-color: #3b82f6 !important; background: white !important; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
     </style>
 </head>
 <body class="pt-10 pb-28">
@@ -174,7 +104,6 @@
             </div>
 
             <div id="view-dash" class="flex-1 flex flex-col p-4 lg:p-6 space-y-4 overflow-y-auto lg:overflow-hidden">
-                
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 shrink-0">
                     <div class="bg-gradient-to-br from-slate-900 to-slate-800 p-5 rounded-2xl relative overflow-hidden shadow-md text-white">
                         <p class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-1">Total Fuel Consumed</p>
@@ -184,7 +113,6 @@
                         </div>
                         <i class="fa-solid fa-gas-pump absolute right-5 bottom-4 text-white/10 text-4xl pointer-events-none"></i>
                     </div>
-
                     <div class="bg-white/50 border border-black/5 p-4 rounded-2xl md:col-span-2 flex flex-col justify-center gap-2 shadow-sm">
                         <p class="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider flex items-center gap-1">
                             <i class="fa-solid fa-warehouse text-emerald-600"></i> Active Inventory Stock Pools Balance Feed
@@ -208,7 +136,6 @@
                                 <input type="date" id="fEnd" onchange="renderLogs()" class="w-full p-2 rounded-xl text-xs font-bold">
                             </div>
                         </div>
-                        
                         <div class="w-full lg:w-4/12 relative">
                             <label class="text-[9px] font-black text-slate-400 uppercase ml-1 block mb-1">Search Database Lookup</label>
                             <div class="relative">
@@ -216,7 +143,6 @@
                                 <input type="text" id="fSearch" oninput="renderLogs()" placeholder="Type vehicle plate code..." class="w-full pl-9 p-2.5 rounded-xl text-xs font-bold uppercase placeholder:text-slate-400">
                             </div>
                         </div>
-
                         <div class="w-full lg:w-3/12 lg:text-right pt-4 lg:pt-0 self-end">
                             <button onclick="exportData()" class="w-full lg:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-5 py-3 rounded-xl transition-all shadow-sm shadow-blue-500/10 flex items-center justify-center gap-2">
                                 <i class="fa-solid fa-file-export"></i> Export Spreadsheet CSV
@@ -243,9 +169,7 @@
                             <input type="text" id="iPlate" autocomplete="off" oninput="searchPlate(this.value)" placeholder="Start typing plate..." required class="w-full p-2.5 bg-white/80 rounded-xl text-xs font-black uppercase placeholder:normal-case">
                             <div id="plateDropdown" class="plate-results hidden"></div>
                         </div>
-
                         <input type="hidden" id="iType">
-
                         <div class="lg:col-span-2 space-y-1">
                             <label class="text-[9px] font-black text-slate-500 uppercase ml-1">Route Hub</label>
                             <select id="iRoute" required class="w-full p-2.5 bg-white/80 rounded-xl text-xs font-bold"></select>
@@ -268,23 +192,21 @@
 
                 <div class="bg-white/60 rounded-2xl flex-1 flex flex-col overflow-hidden border border-black/5 shadow-inner">
                     <div class="table-container">
-                        <div class="w-full overflow-x-auto -webkit-overflow-scrolling: touch;">
-                            <table class="w-full text-left text-xs border-collapse min-w-[750px] lg:min-w-0">
-                                <thead>
-                                    <tr class="bg-slate-200/60 border-b border-black/5 sticky top-0 backdrop-blur-md z-10 text-slate-700">
-                                        <th class="px-6 py-3.5 text-[9px] font-black uppercase tracking-wider">Date Logged</th>
-                                        <th class="px-6 py-3.5 text-[9px] font-black uppercase tracking-wider">Time Logged</th>
-                                        <th class="px-6 py-3.5 text-[9px] font-black uppercase tracking-wider">Plate Identity</th>
-                                        <th class="px-6 py-3.5 text-[9px] font-black uppercase tracking-wider">Specs Configuration</th>
-                                        <th class="px-6 py-3.5 text-[9px] font-black uppercase tracking-wider">Stock Source</th>
-                                        <th class="px-6 py-3.5 text-[9px] font-black uppercase tracking-wider admin-only">Logged By</th>
-                                        <th class="px-6 py-3.5 text-[9px] font-black uppercase tracking-wider text-right">Fuel Volume</th>
-                                        <th class="px-6 py-3.5 text-[9px] font-black uppercase tracking-wider text-right admin-only">Manage</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="logTable" class="text-slate-700 font-medium"></tbody>
-                            </table>
-                        </div>
+                        <table class="w-full text-left text-xs border-collapse min-w-[750px] lg:min-w-0">
+                            <thead>
+                                <tr class="bg-slate-200/60 border-b border-black/5 sticky top-0 backdrop-blur-md z-10 text-slate-700">
+                                    <th class="px-6 py-3.5 text-[9px] font-black uppercase tracking-wider">Date Logged</th>
+                                    <th class="px-6 py-3.5 text-[9px] font-black uppercase tracking-wider">Time Logged</th>
+                                    <th class="px-6 py-3.5 text-[9px] font-black uppercase tracking-wider">Plate Identity</th>
+                                    <th class="px-6 py-3.5 text-[9px] font-black uppercase tracking-wider">Specs Configuration</th>
+                                    <th class="px-6 py-3.5 text-[9px] font-black uppercase tracking-wider">Stock Source</th>
+                                    <th class="px-6 py-3.5 text-[9px] font-black uppercase tracking-wider admin-only">Logged By</th>
+                                    <th class="px-6 py-3.5 text-[9px] font-black uppercase tracking-wider text-right">Fuel Volume</th>
+                                    <th class="px-6 py-3.5 text-[9px] font-black uppercase tracking-wider text-right admin-only">Manage</th>
+                                </tr>
+                            </thead>
+                            <tbody id="logTable" class="text-slate-700 font-medium"></tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -358,14 +280,11 @@
                 <i class="fa-solid fa-chart-pie"></i>
                 <span class="absolute bottom-1 w-1 h-1 bg-white rounded-full opacity-100 transition-opacity" id="dockIndicatorDash"></span>
             </button>
-            
             <button onclick="nav('admin')" id="m-admin" class="admin-only-flex dock-item hidden relative w-11 h-11 rounded-xl bg-gradient-to-tr from-slate-500 to-slate-700 shadow-md flex-col items-center justify-center text-white text-lg">
                 <i class="fa-solid fa-sliders"></i>
                 <span class="absolute bottom-1 w-1 h-1 bg-white rounded-full opacity-0 transition-opacity" id="dockIndicatorAdmin"></span>
             </button>
-
             <div class="w-[1px] h-8 bg-white/30 self-center"></div>
-
             <button onclick="location.reload()" class="dock-item w-11 h-11 rounded-xl bg-gradient-to-tr from-red-400 to-rose-600 shadow-md flex items-center justify-center text-white text-lg">
                 <i class="fa-solid fa-power-off"></i>
             </button>
@@ -392,6 +311,27 @@
         let session = null;
         let db = { users: [], config: { vehicles: [], routes: ['Phnom Penh'], stocks: [] }, logs: [] };
         let filteredResults = [];
+
+        // --- Edit Helper Functions ---
+        window.updateStock = async (name) => {
+            const newQty = prompt("Enter new capacity for " + name);
+            if (newQty === null) return;
+            const stock = db.config.stocks.find(s => s.name === name);
+            if (stock) {
+                stock.qty = parseFloat(newQty);
+                await setDoc(doc(firestore, "settings", "config"), db.config);
+            }
+        };
+
+        window.updateVehicle = async (plate) => {
+            const newType = prompt("Enter new Model/Type for " + plate);
+            if (newType === null) return;
+            const vehicle = db.config.vehicles.find(v => v.plate === plate);
+            if (vehicle) {
+                vehicle.type = newType;
+                await setDoc(doc(firestore, "settings", "config"), db.config);
+            }
+        };
 
         function runClock() {
             const time = new Date();
@@ -426,7 +366,6 @@
         window.nav = (v) => {
             document.getElementById('view-dash').classList.toggle('hidden', v !== 'dash');
             document.getElementById('view-admin').classList.toggle('hidden', v !== 'admin');
-            
             document.getElementById('dockIndicatorDash').classList.toggle('opacity-100', v === 'dash');
             document.getElementById('dockIndicatorDash').classList.toggle('opacity-0', v !== 'dash');
             document.getElementById('dockIndicatorAdmin').classList.toggle('opacity-100', v === 'admin');
@@ -460,12 +399,10 @@
         function init() {
             const today = new Date();
             document.getElementById('iDate').valueAsDate = today;
-            
             const hh = String(today.getHours()).padStart(2, '0');
             const mm = String(today.getMinutes()).padStart(2, '0');
             const ss = String(today.getSeconds()).padStart(2, '0');
             document.getElementById('iTime').value = `${hh}:${mm}:${ss}`;
-            
             refresh();
         }
 
@@ -489,20 +426,13 @@
             document.getElementById('plateDropdown').classList.add('hidden');
         }
 
-        document.addEventListener('click', (e) => {
-            if(!e.target.closest('.group')) document.getElementById('plateDropdown').classList.add('hidden');
-        });
-
         window.renderLogs = () => {
             const s = document.getElementById('fSearch').value.toUpperCase();
             const start = document.getElementById('fStart').value;
             const end = document.getElementById('fEnd').value;
             let total = 0;
-            
             let totalDeductions = {};
-            if(db.config.stocks) {
-                db.config.stocks.forEach(st => totalDeductions[st.name] = 0);
-            }
+            if(db.config.stocks) db.config.stocks.forEach(st => totalDeductions[st.name] = 0);
 
             filteredResults = db.logs.filter(l => {
                 const d = new Date(l.date); d.setHours(0,0,0,0);
@@ -515,9 +445,7 @@
             });
 
             db.logs.forEach(l => {
-                if (l.stockSource && totalDeductions[l.stockSource] !== undefined) {
-                    totalDeductions[l.stockSource] += l.amt;
-                }
+                if (l.stockSource && totalDeductions[l.stockSource] !== undefined) totalDeductions[l.stockSource] += l.amt;
             });
 
             document.getElementById('logTable').innerHTML = filteredResults.map((l, idx) => {
@@ -530,22 +458,11 @@
                     <td class="px-6 py-3.5 font-bold text-slate-500">${datePart}</td>
                     <td class="px-6 py-3.5 font-semibold text-blue-600/80">${timePart}</td>
                     <td class="px-6 py-3.5 font-black text-slate-900 tracking-tight">${l.plate}</td>
-                    <td class="px-6 py-3.5">
-                        <div class="flex items-center gap-1.5">
-                            <span class="text-[9px] font-black bg-slate-900/5 px-2 py-0.5 rounded text-slate-700">${l.type || 'N/A'}</span>
-                            <span class="font-bold text-slate-400 text-[11px]">${l.route}</span>
-                        </div>
-                    </td>
-                    <td class="px-6 py-3.5">
-                        <span class="text-[10px] font-black bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded uppercase tracking-wide">${l.stockSource || 'None'}</span>
-                    </td>
+                    <td class="px-6 py-3.5"><div class="flex items-center gap-1.5"><span class="text-[9px] font-black bg-slate-900/5 px-2 py-0.5 rounded text-slate-700">${l.type || 'N/A'}</span><span class="font-bold text-slate-400 text-[11px]">${l.route}</span></div></td>
+                    <td class="px-6 py-3.5"><span class="text-[10px] font-black bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded uppercase tracking-wide">${l.stockSource || 'None'}</span></td>
                     <td class="px-6 py-3.5 admin-only font-bold text-slate-500 uppercase">${l.user}</td>
                     <td class="px-6 py-3.5 text-right font-black text-slate-900 text-sm">${l.amt.toFixed(2)} <span class="text-slate-400 font-bold text-[9px]">L</span></td>
-                    <td class="px-6 py-3.5 text-right admin-only">
-                        <button onclick="delLog('${l.id}')" class="w-7 h-7 rounded-lg hover:bg-red-50 text-slate-300 hover:text-red-500 transition-all">
-                            <i class="fa-solid fa-trash-can text-xs"></i>
-                        </button>
-                    </td>
+                    <td class="px-6 py-3.5 text-right admin-only"><button onclick="delLog('${l.id}')" class="w-7 h-7 rounded-lg hover:bg-red-50 text-slate-300 hover:text-red-500 transition-all"><i class="fa-solid fa-trash-can text-xs"></i></button></td>
                 </tr>`;
             }).join('') || '<tr><td colspan="8" class="py-20 text-center"><div class="opacity-25 font-black text-2xl tracking-wider text-slate-400">NO DATA FOUND</div></td></tr>';
             
@@ -553,7 +470,6 @@
 
             if(db.config.stocks) {
                 const allowedStocks = db.config.stocks.filter(st => session.role === 'admin' || !session.stockScope || session.stockScope === 'all' || session.stockScope === st.name);
-                
                 document.getElementById('dashStockList').innerHTML = allowedStocks.map(st => {
                     const remaining = parseFloat(st.qty) - (totalDeductions[st.name] || 0);
                     return `
@@ -566,54 +482,26 @@
             }
         }
 
-        // Updated Export CSV Handler to Split Time and Date Perfectly into Columns
         window.exportData = () => {
             if(filteredResults.length === 0) return alert("No data to export");
-            
-            // Separated Date and Time headers completely into individual split columns
             let csv = "Date,Time,Plate Number,Vehicle Type,Route Destination,Stock Source,Logged By,Liters\n";
-            
             filteredResults.forEach(l => {
                 const dObj = new Date(l.date);
-                
-                // Formats custom ISO values cleanly into separated text strings without inline commas
-                const year = dObj.getFullYear();
-                const month = String(dObj.getMonth() + 1).padStart(2, '0');
-                const day = String(dObj.getDate()).padStart(2, '0');
-                const cleanDate = `${year}-${month}-${day}`;
-                
-                const cleanTime = dObj.toTimeString().split(' ')[0]; // Returns perfectly clean "HH:MM:SS"
-                
-                const plate = l.plate || '';
-                const type = l.type || 'N/A';
-                const route = l.route || '';
-                const source = l.stockSource || 'None';
-                const user = l.user || '';
-                const amount = l.amt || 0;
-                
-                csv += `"${cleanDate}","${cleanTime}","${plate}","${type}","${route}","${source}","${user}",${amount}\n`;
+                const cleanDate = `${dObj.getFullYear()}-${String(dObj.getMonth()+1).padStart(2,'0')}-${String(dObj.getDate()).padStart(2,'0')}`;
+                const cleanTime = dObj.toTimeString().split(' ')[0];
+                csv += `"${cleanDate}","${cleanTime}","${l.plate || ''}","${l.type || 'N/A'}","${l.route || ''}","${l.stockSource || 'None'}","${l.user || ''}",${l.amt || 0}\n`;
             });
-            
             const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const a = document.createElement('a'); 
-            a.href = URL.createObjectURL(blob); 
-            a.download = 'CL21_Split_Oil_Report.csv'; 
-            a.click();
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'CL21_Report.csv'; a.click();
         };
 
         window.refresh = () => {
             renderLogs();
             const vS = document.getElementById('vSearch').value.toUpperCase();
-            
-            document.getElementById('list-users').innerHTML = db.users.map((u) => `
+            document.getElementById('list-users').innerHTML = db.users.map(u => `
                 <div class="p-3 bg-white/60 border border-black/5 rounded-xl flex flex-col gap-1 text-xs font-black shadow-sm">
-                    <div class="flex justify-between items-center">
-                        <span>${u.u}</span>
-                        ${u.u !== 'admin' ? `<button onclick="delUser('${u.id}')" class="text-red-500 hover:underline">DELETE</button>` : '<span class="text-blue-500 text-[10px]">MASTER</span>'}
-                    </div>
-                    <div class="text-[9px] font-medium text-slate-400">
-                        Scope: <span class="text-emerald-700 font-bold uppercase">${u.stockScope || 'all'}</span>
-                    </div>
+                    <div class="flex justify-between items-center"><span>${u.u}</span>${u.u !== 'admin' ? `<button onclick="delUser('${u.id}')" class="text-red-500 hover:underline">DELETE</button>` : '<span class="text-blue-500 text-[10px]">MASTER</span>'}</div>
+                    <div class="text-[9px] font-medium text-slate-400">Scope: <span class="text-emerald-700 font-bold uppercase">${u.stockScope || 'all'}</span></div>
                 </div>
             `).join('');
             
@@ -623,26 +511,24 @@
                     <div>
                         <span class="text-blue-600 mr-1">${index + 1}.</span>${v.plate}
                         <br>
-                        <span class="text-[9px] font-medium text-slate-400 ml-4">${v.type}</span>
+                        <span class="text-[9px] font-medium text-slate-400 ml-4 cursor-pointer hover:text-blue-500" onclick="updateVehicle('${v.plate}')">${v.type} ✏️</span>
                     </div> 
                     <button onclick="delV('${v.plate}')" class="text-red-500 hover:underline">REMOVE</button>
                 </div>
             `).join('');
             
-            document.getElementById('list-roads').innerHTML = db.config.routes.map((r) => `<div class="p-2.5 bg-white/60 border border-black/5 rounded-xl flex justify-between items-center text-[10px] font-black shadow-sm">${r} <button onclick="delR('${r}')" class="text-red-400 font-bold text-xs ml-1">×</button></div>`).join('');
+            document.getElementById('list-roads').innerHTML = db.config.routes.map(r => `<div class="p-2.5 bg-white/60 border border-black/5 rounded-xl flex justify-between items-center text-[10px] font-black shadow-sm">${r} <button onclick="delR('${r}')" class="text-red-400 font-bold text-xs ml-1">×</button></div>`).join('');
             document.getElementById('iRoute').innerHTML = db.config.routes.map(r => `<option>${r}</option>`).join('');
 
             if(db.config.stocks) {
                 document.getElementById('uStockScope').innerHTML = '<option value="all">All Access</option>' + db.config.stocks.map(st => `<option value="${st.name}">${st.name}</option>`).join('');
-
                 const selectableStocks = db.config.stocks.filter(st => !session || session.role === 'admin' || !session.stockScope || session.stockScope === 'all' || session.stockScope === st.name);
                 document.getElementById('iStockSource').innerHTML = selectableStocks.map(st => `<option value="${st.name}">${st.name}</option>`).join('');
-                
                 document.getElementById('list-stocks').innerHTML = db.config.stocks.map(st => `
                     <div class="p-3 bg-white/60 border border-black/5 rounded-xl flex justify-between items-center text-xs font-black shadow-sm">
                         <div>
                             <span class="text-emerald-700 font-extrabold uppercase">${st.name}</span>
-                            <br><span class="text-[9px] font-medium text-slate-400">Total Capacity: ${st.qty}L</span>
+                            <br><span class="text-[9px] font-medium text-slate-400 cursor-pointer hover:text-emerald-500" onclick="updateStock('${st.name}')">Capacity: ${st.qty}L ✏️</span>
                         </div>
                         <button onclick="delStockLocation('${st.name}')" class="text-red-500 hover:underline">REMOVE</button>
                     </div>
@@ -657,36 +543,13 @@
             const plate = document.getElementById('iPlate').value.toUpperCase();
             const v = db.config.vehicles.find(v => v.plate === plate);
             if(!v) { alert("Vehicle Plate Not Found!"); btn.innerHTML = '<i class="fa-solid fa-plus text-sm"></i>'; return; }
-            
             const dateValue = document.getElementById('iDate').value; 
             const timeValue = document.getElementById('iTime').value; 
-            
-            const timeParts = timeValue.split(':');
-            const hours = parseInt(timeParts[0], 10) || 0;
-            const minutes = parseInt(timeParts[1], 10) || 0;
-            const seconds = parseInt(timeParts[2], 10) || 0;
-
-            const chosenDate = new Date(dateValue);
-            chosenDate.setHours(hours, minutes, seconds, 0);
-
-            await addDoc(collection(firestore, "oil_logs"), { 
-                plate, 
-                type: document.getElementById('iType').value || v.type, 
-                route: document.getElementById('iRoute').value, 
-                stockSource: document.getElementById('iStockSource').value,
-                amt: parseFloat(document.getElementById('iAmt').value), 
-                user: session.u, 
-                date: chosenDate.toISOString() 
-            });
-            
+            const chosenDate = new Date(dateValue + "T" + timeValue);
+            await addDoc(collection(firestore, "oil_logs"), { plate, type: document.getElementById('iType').value || v.type, route: document.getElementById('iRoute').value, stockSource: document.getElementById('iStockSource').value, amt: parseFloat(document.getElementById('iAmt').value), user: session.u, date: chosenDate.toISOString() });
             document.getElementById('iAmt').value = ''; document.getElementById('iPlate').value = ''; document.getElementById('iType').value = '';
-            
             const now = new Date();
-            const hh = String(now.getHours()).padStart(2, '0');
-            const mm = String(now.getMinutes()).padStart(2, '0');
-            const ss = String(now.getSeconds()).padStart(2, '0');
-            document.getElementById('iTime').value = `${hh}:${mm}:${ss}`;
-            
+            document.getElementById('iTime').value = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
             btn.innerHTML = '<i class="fa-solid fa-plus text-sm"></i>';
         };
 
@@ -694,13 +557,7 @@
             const p = document.getElementById('vPlate').value.trim().toUpperCase(); 
             const t = document.getElementById('vTypeManual').value.trim().toUpperCase(); 
             if(!p || !t) return; 
-
-            const isDuplicate = db.config.vehicles.some(v => v.plate === p);
-            if(isDuplicate) {
-                alert("Error: This Vehicle Plate is already registered in the database!");
-                return;
-            }
-
+            if(db.config.vehicles.some(v => v.plate === p)) { alert("Error: Vehicle exists!"); return; }
             db.config.vehicles.push({ plate: p, type: t }); 
             await setDoc(doc(firestore, "settings", "config"), db.config);
             document.getElementById('vPlate').value = ''; document.getElementById('vTypeManual').value = ''; 
@@ -710,20 +567,13 @@
             const name = document.getElementById('sName').value.trim().toUpperCase();
             const qty = parseFloat(document.getElementById('sQty').value);
             if(!name || isNaN(qty)) return;
-            if(!db.config.stocks) db.config.stocks = [];
             if(db.config.stocks.some(x => x.name === name)) { alert("Stock hub already configured!"); return; }
             db.config.stocks.push({ name, qty });
             await setDoc(doc(firestore, "settings", "config"), db.config);
             document.getElementById('sName').value = ''; document.getElementById('sQty').value = '';
         };
 
-        window.delStockLocation = async (name) => {
-            if(confirm(`Completely remove stock target ${name}?`)) {
-                db.config.stocks = db.config.stocks.filter(x => x.name !== name);
-                await setDoc(doc(firestore, "settings", "config"), db.config);
-            }
-        };
-
+        window.delStockLocation = async (name) => { if(confirm(`Remove stock ${name}?`)) { db.config.stocks = db.config.stocks.filter(x => x.name !== name); await setDoc(doc(firestore, "settings", "config"), db.config); }};
         window.delV = async (p) => { if(confirm("Remove vehicle?")) { db.config.vehicles = db.config.vehicles.filter(v => v.plate !== p); await setDoc(doc(firestore, "settings", "config"), db.config); }};
         window.delR = async (r) => { if(confirm("Remove route?")) { db.config.routes = db.config.routes.filter(x => x !== r); await setDoc(doc(firestore, "settings", "config"), db.config); }};
         window.delLog = async (id) => { if(confirm("Delete log entry?")){ await deleteDoc(doc(firestore, "oil_logs", id)); }};
@@ -736,11 +586,9 @@
             const p = document.getElementById('uPass').value.trim(); 
             const stockScope = document.getElementById('uStockScope').value;
             if(!u || !p) return; 
-            
             await addDoc(collection(firestore, "users"), { u, p, role: 'staff', stockScope }); 
             document.getElementById('uName').value = ''; document.getElementById('uPass').value = ''; 
         };
-
     </script>
 </body>
 </html>
