@@ -293,7 +293,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, deleteDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, deleteDoc, setDoc, runTransaction } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDITjn7k_fWas0YJgOYh5daG3YARqWe9n0",
@@ -312,27 +312,34 @@
         let db = { users: [], config: { vehicles: [], routes: ['Phnom Penh'], stocks: [] }, logs: [] };
         let filteredResults = [];
 
-        // --- Edit Helper Functions ---
+        // --- ATOMIC TRANSACTION HELPERS ---
+        const configRef = doc(firestore, "settings", "config");
+
         window.updateStock = async (name) => {
             const newQty = prompt("Enter new capacity for " + name);
             if (newQty === null) return;
-            const stock = db.config.stocks.find(s => s.name === name);
-            if (stock) {
-                stock.qty = parseFloat(newQty);
-                await setDoc(doc(firestore, "settings", "config"), db.config);
-            }
+            await runTransaction(firestore, async (transaction) => {
+                const doc = await transaction.get(configRef);
+                const data = doc.data();
+                const stock = data.stocks.find(s => s.name === name);
+                if (stock) stock.qty = parseFloat(newQty);
+                transaction.set(configRef, data);
+            });
         };
 
         window.updateVehicle = async (plate) => {
             const newType = prompt("Enter new Model/Type for " + plate);
             if (newType === null) return;
-            const vehicle = db.config.vehicles.find(v => v.plate === plate);
-            if (vehicle) {
-                vehicle.type = newType;
-                await setDoc(doc(firestore, "settings", "config"), db.config);
-            }
+            await runTransaction(firestore, async (transaction) => {
+                const doc = await transaction.get(configRef);
+                const data = doc.data();
+                const vehicle = data.vehicles.find(v => v.plate === plate);
+                if (vehicle) vehicle.type = newType;
+                transaction.set(configRef, data);
+            });
         };
 
+        // --- Existing UI Logic ---
         function runClock() {
             const time = new Date();
             document.getElementById('macClock').innerText = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -342,20 +349,11 @@
 
         onSnapshot(collection(firestore, "users"), (s) => {
             db.users = s.docs.map(d => ({ id: d.id, ...d.data() }));
-            if (db.users.length === 0) setDoc(doc(firestore, "users", "admin_default"), { u: 'admin', p: 'cambo@123', role: 'admin', stockScope: 'all' });
             refresh();
         });
 
-        onSnapshot(doc(firestore, "settings", "config"), (s) => {
-            if (s.exists()) { 
-                db.config = s.data(); 
-                if (!db.config.stocks) db.config.stocks = [];
-                refresh(); 
-            }
-            else { 
-                if (!db.config.stocks) db.config.stocks = [];
-                setDoc(doc(firestore, "settings", "config"), db.config); 
-            }
+        onSnapshot(configRef, (s) => {
+            if (s.exists()) { db.config = s.data(); if (!db.config.stocks) db.config.stocks = []; refresh(); }
         });
 
         onSnapshot(query(collection(firestore, "oil_logs"), orderBy("date", "desc")), (s) => {
@@ -556,10 +554,14 @@
         window.addVehicle = async () => { 
             const p = document.getElementById('vPlate').value.trim().toUpperCase(); 
             const t = document.getElementById('vTypeManual').value.trim().toUpperCase(); 
-            if(!p || !t) return; 
-            if(db.config.vehicles.some(v => v.plate === p)) { alert("Error: Vehicle exists!"); return; }
-            db.config.vehicles.push({ plate: p, type: t }); 
-            await setDoc(doc(firestore, "settings", "config"), db.config);
+            if(!p || !t) return;
+            await runTransaction(firestore, async (transaction) => {
+                const doc = await transaction.get(configRef);
+                const data = doc.data();
+                if(data.vehicles.some(v => v.plate === p)) throw "Vehicle exists";
+                data.vehicles.push({ plate: p, type: t });
+                transaction.set(configRef, data);
+            }).catch(e => alert("Error: " + e));
             document.getElementById('vPlate').value = ''; document.getElementById('vTypeManual').value = ''; 
         };
 
@@ -567,17 +569,21 @@
             const name = document.getElementById('sName').value.trim().toUpperCase();
             const qty = parseFloat(document.getElementById('sQty').value);
             if(!name || isNaN(qty)) return;
-            if(db.config.stocks.some(x => x.name === name)) { alert("Stock hub already configured!"); return; }
-            db.config.stocks.push({ name, qty });
-            await setDoc(doc(firestore, "settings", "config"), db.config);
+            await runTransaction(firestore, async (transaction) => {
+                const doc = await transaction.get(configRef);
+                const data = doc.data();
+                if(data.stocks.some(x => x.name === name)) throw "Stock hub already configured";
+                data.stocks.push({ name, qty });
+                transaction.set(configRef, data);
+            }).catch(e => alert("Error: " + e));
             document.getElementById('sName').value = ''; document.getElementById('sQty').value = '';
         };
 
-        window.delStockLocation = async (name) => { if(confirm(`Remove stock ${name}?`)) { db.config.stocks = db.config.stocks.filter(x => x.name !== name); await setDoc(doc(firestore, "settings", "config"), db.config); }};
-        window.delV = async (p) => { if(confirm("Remove vehicle?")) { db.config.vehicles = db.config.vehicles.filter(v => v.plate !== p); await setDoc(doc(firestore, "settings", "config"), db.config); }};
-        window.delR = async (r) => { if(confirm("Remove route?")) { db.config.routes = db.config.routes.filter(x => x !== r); await setDoc(doc(firestore, "settings", "config"), db.config); }};
+        window.delStockLocation = async (name) => { if(confirm(`Remove stock ${name}?`)) { await runTransaction(firestore, async (t) => { const d = await t.get(configRef); const data = d.data(); data.stocks = data.stocks.filter(x => x.name !== name); t.set(configRef, data); }); }};
+        window.delV = async (p) => { if(confirm("Remove vehicle?")) { await runTransaction(firestore, async (t) => { const d = await t.get(configRef); const data = d.data(); data.vehicles = data.vehicles.filter(v => v.plate !== p); t.set(configRef, data); }); }};
+        window.delR = async (r) => { if(confirm("Remove route?")) { await runTransaction(firestore, async (t) => { const d = await t.get(configRef); const data = d.data(); data.routes = data.routes.filter(x => x !== r); t.set(configRef, data); }); }};
         window.delLog = async (id) => { if(confirm("Delete log entry?")){ await deleteDoc(doc(firestore, "oil_logs", id)); }};
-        window.addRoute = async () => { const r = document.getElementById('rName').value.trim(); if(!r) return; db.config.routes.push(r); await setDoc(doc(firestore, "settings", "config"), db.config); document.getElementById('rName').value = ''; };
+        window.addRoute = async () => { const r = document.getElementById('rName').value.trim(); if(!r) return; await runTransaction(firestore, async (t) => { const d = await t.get(configRef); const data = d.data(); data.routes.push(r); t.set(configRef, data); }); document.getElementById('rName').value = ''; };
         window.delUser = async (id) => { if(confirm("Delete user account?")) await deleteDoc(doc(firestore, "users", id)); };
         
         document.getElementById('uForm').onsubmit = async (e) => { 
