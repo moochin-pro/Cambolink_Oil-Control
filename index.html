@@ -1,3 +1,10 @@
+Here is the complete, fully integrated code with all the security filters and database transaction fixes applied.
+
+I have combined your original Mac-style UI with the strict privacy logic so that regular staff will **only** see their assigned stock pools in the dashboard, the dropdowns, and the tables.
+
+Copy this entire block and replace the contents of your `index.html` file:
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -70,7 +77,7 @@
                 <div class="w-16 h-16 bg-gradient-to-tr from-emerald-400 to-teal-500 rounded-2xl flex items-center justify-center mb-4 shadow-md shadow-emerald-500/20">
                     <i class="fa-solid fa-droplet text-white text-2xl animate-pulse"></i>
                 </div>
-                <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Cambolink21_Express_Fual</h1>
+                <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Cambolink21_Express_Fuel</h1>
                 <p class="text-xs text-slate-500 font-medium mt-0.5">Enter Security Key to access system</p>
             </div>
             <form id="loginForm" class="space-y-4">
@@ -90,7 +97,6 @@
     </div>
 
     <div id="app" class="hidden max-w-7xl mx-auto px-4 lg:px-8 h-[calc(100vh-5rem)] flex flex-col mt-4">
-        
         <main class="mac-window rounded-2xl flex-1 flex flex-col overflow-hidden relative border border-white/50">
             <div class="h-11 border-b border-black/5 flex items-center px-4 shrink-0 bg-white/20 select-none">
                 <div class="flex gap-1.5">
@@ -295,6 +301,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, deleteDoc, setDoc, runTransaction } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+        // Your specific Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyDITjn7k_fWas0YJgOYh5daG3YARqWe9n0",
             authDomain: "cl21-oil-system.firebaseapp.com",
@@ -339,10 +346,11 @@
             });
         };
 
-        // --- Existing UI Logic ---
+        // --- UI Logic ---
         function runClock() {
             const time = new Date();
-            document.getElementById('macClock').innerText = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const clockEl = document.getElementById('macClock');
+            if (clockEl) clockEl.innerText = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         }
         setInterval(runClock, 1000);
         runClock();
@@ -391,7 +399,9 @@
                     document.getElementById('app').classList.remove('hidden');
                     init();
                 }, 500);
-            } else alert("Invalid identity or security key");
+            } else {
+                alert("Invalid identity or security key");
+            }
         };
 
         function init() {
@@ -410,12 +420,14 @@
             const results = db.config.vehicles.filter(v => v.plate.includes(val.toUpperCase()));
             if(results.length > 0) {
                 dropdown.innerHTML = results.map(v => `
-                    <div class="plate-item font-black p-3 hover:bg-blue-50/60 text-xs border-b border-black/5 text-slate-800 transition-colors" onclick="selectPlate('${v.plate}', '${v.type}')">
+                    <div class="plate-item font-black p-3 hover:bg-blue-50/60 text-xs border-b border-black/5 text-slate-800 transition-colors cursor-pointer" onclick="selectPlate('${v.plate}', '${v.type}')">
                         ${v.plate} <span class="text-slate-400 font-bold ml-1 opacity-60">${v.type}</span>
                     </div>
                 `).join('');
                 dropdown.classList.remove('hidden');
-            } else dropdown.classList.add('hidden');
+            } else {
+                dropdown.classList.add('hidden');
+            }
         }
 
         window.selectPlate = (plate, type) => {
@@ -425,13 +437,17 @@
         }
 
         window.renderLogs = () => {
+            if (!session) return;
+            
             const s = document.getElementById('fSearch').value.toUpperCase();
             const start = document.getElementById('fStart').value;
             const end = document.getElementById('fEnd').value;
             let total = 0;
             let totalDeductions = {};
+            
             if(db.config.stocks) db.config.stocks.forEach(st => totalDeductions[st.name] = 0);
 
+            // Filter Logs
             filteredResults = db.logs.filter(l => {
                 const d = new Date(l.date); d.setHours(0,0,0,0);
                 const userMatch = (session.role === 'admin' || l.user === session.u);
@@ -446,6 +462,7 @@
                 if (l.stockSource && totalDeductions[l.stockSource] !== undefined) totalDeductions[l.stockSource] += l.amt;
             });
 
+            // Render Table
             document.getElementById('logTable').innerHTML = filteredResults.map((l, idx) => {
                 total += l.amt;
                 const dtObj = new Date(l.date);
@@ -466,8 +483,10 @@
             
             document.getElementById('totalDisplay').innerText = total.toFixed(2);
 
+            // Render Dashboard Stock Filtered securely based on assigned scope
             if(db.config.stocks) {
-                const allowedStocks = db.config.stocks.filter(st => session.role === 'admin' || !session.stockScope || session.stockScope === 'all' || session.stockScope === st.name);
+                const allowedStocks = db.config.stocks.filter(st => session.role === 'admin' || session.stockScope === 'all' || session.stockScope === st.name);
+                
                 document.getElementById('dashStockList').innerHTML = allowedStocks.map(st => {
                     const remaining = parseFloat(st.qty) - (totalDeductions[st.name] || 0);
                     return `
@@ -494,8 +513,12 @@
         };
 
         window.refresh = () => {
+            if (!session) return;
             renderLogs();
+            
             const vS = document.getElementById('vSearch').value.toUpperCase();
+            
+            // Admin Panels
             document.getElementById('list-users').innerHTML = db.users.map(u => `
                 <div class="p-3 bg-white/60 border border-black/5 rounded-xl flex flex-col gap-1 text-xs font-black shadow-sm">
                     <div class="flex justify-between items-center"><span>${u.u}</span>${u.u !== 'admin' ? `<button onclick="delUser('${u.id}')" class="text-red-500 hover:underline">DELETE</button>` : '<span class="text-blue-500 text-[10px]">MASTER</span>'}</div>
@@ -516,12 +539,19 @@
             `).join('');
             
             document.getElementById('list-roads').innerHTML = db.config.routes.map(r => `<div class="p-2.5 bg-white/60 border border-black/5 rounded-xl flex justify-between items-center text-[10px] font-black shadow-sm">${r} <button onclick="delR('${r}')" class="text-red-400 font-bold text-xs ml-1">×</button></div>`).join('');
+            
+            // Core Application Form Fields
             document.getElementById('iRoute').innerHTML = db.config.routes.map(r => `<option>${r}</option>`).join('');
 
             if(db.config.stocks) {
-                document.getElementById('uStockScope').innerHTML = '<option value="all">All Access</option>' + db.config.stocks.map(st => `<option value="${st.name}">${st.name}</option>`).join('');
-                const selectableStocks = db.config.stocks.filter(st => !session || session.role === 'admin' || !session.stockScope || session.stockScope === 'all' || session.stockScope === st.name);
+                // Determine which stocks this user is allowed to select from
+                const selectableStocks = db.config.stocks.filter(st => session.role === 'admin' || session.stockScope === 'all' || session.stockScope === st.name);
+                
+                // Form Dropdowns
                 document.getElementById('iStockSource').innerHTML = selectableStocks.map(st => `<option value="${st.name}">${st.name}</option>`).join('');
+                document.getElementById('uStockScope').innerHTML = '<option value="all">All Access</option>' + db.config.stocks.map(st => `<option value="${st.name}">${st.name}</option>`).join('');
+                
+                // Admin Stock List
                 document.getElementById('list-stocks').innerHTML = db.config.stocks.map(st => `
                     <div class="p-3 bg-white/60 border border-black/5 rounded-xl flex justify-between items-center text-xs font-black shadow-sm">
                         <div>
@@ -540,12 +570,31 @@
             btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin"></i>';
             const plate = document.getElementById('iPlate').value.toUpperCase();
             const v = db.config.vehicles.find(v => v.plate === plate);
-            if(!v) { alert("Vehicle Plate Not Found!"); btn.innerHTML = '<i class="fa-solid fa-plus text-sm"></i>'; return; }
+            
+            if(!v) { 
+                alert("Vehicle Plate Not Found!"); 
+                btn.innerHTML = '<i class="fa-solid fa-plus text-sm"></i>'; 
+                return; 
+            }
+            
             const dateValue = document.getElementById('iDate').value; 
             const timeValue = document.getElementById('iTime').value; 
             const chosenDate = new Date(dateValue + "T" + timeValue);
-            await addDoc(collection(firestore, "oil_logs"), { plate, type: document.getElementById('iType').value || v.type, route: document.getElementById('iRoute').value, stockSource: document.getElementById('iStockSource').value, amt: parseFloat(document.getElementById('iAmt').value), user: session.u, date: chosenDate.toISOString() });
-            document.getElementById('iAmt').value = ''; document.getElementById('iPlate').value = ''; document.getElementById('iType').value = '';
+            
+            await addDoc(collection(firestore, "oil_logs"), { 
+                plate, 
+                type: document.getElementById('iType').value || v.type, 
+                route: document.getElementById('iRoute').value, 
+                stockSource: document.getElementById('iStockSource').value, 
+                amt: parseFloat(document.getElementById('iAmt').value), 
+                user: session.u, 
+                date: chosenDate.toISOString() 
+            });
+            
+            document.getElementById('iAmt').value = ''; 
+            document.getElementById('iPlate').value = ''; 
+            document.getElementById('iType').value = '';
+            
             const now = new Date();
             document.getElementById('iTime').value = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
             btn.innerHTML = '<i class="fa-solid fa-plus text-sm"></i>';
@@ -598,3 +647,5 @@
     </script>
 </body>
 </html>
+
+```
